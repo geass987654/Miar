@@ -6,12 +6,12 @@ using UnityEngine;
 public class Player : MonoBehaviour
 {
     [SerializeField] private Rigidbody2D rb;
+
     [SerializeField] private float moveSpeed = 4f;
 
     private Animator animator;
-    private AnimatorClipInfo[] clipInfo;
+
     private Vector2 direction = Vector2.zero;
-    private string animationName;
 
     private void Awake()
     {
@@ -22,7 +22,7 @@ public class Player : MonoBehaviour
     private void Update()
     {
         ReadPlayerInput();
-        AdjustIdleDirection();
+        SwitchAnim();
     }
 
     private void FixedUpdate()
@@ -35,42 +35,16 @@ public class Player : MonoBehaviour
     {
         direction.x = Input.GetAxisRaw("Horizontal");
         direction.y = Input.GetAxisRaw("Vertical");
-
-        animator.SetFloat("Horizontal", direction.x);
-        animator.SetFloat("Vertical", direction.y);
-        animator.SetFloat("Magnitude", direction.sqrMagnitude);
     }
 
-    void AdjustIdleDirection()
+    void SwitchAnim()
     {
-        animationName = GetCurrentClipName();
-        switch (animationName)
+        if (direction != Vector2.zero)
         {
-            case "Run_front":
-                animator.SetInteger("Direction", 0);
-                break;
-
-            case "Run_back":
-                animator.SetInteger("Direction", 1);
-                break;
-
-            case "Run_left":
-                animator.SetInteger("Direction", 2);
-                break;
-
-            case "Run_right":
-                animator.SetInteger("Direction", 3);
-                break;
-
-            default:
-                break;
+            animator.SetFloat("Horizontal", direction.x);
+            animator.SetFloat("Vertical", direction.y);
         }
-    }
-
-    private string GetCurrentClipName()
-    {
-        clipInfo = animator.GetCurrentAnimatorClipInfo(0);
-        return clipInfo[0].clip.name;
+        animator.SetFloat("Magnitude", direction.sqrMagnitude);
     }
 
     void Move()
