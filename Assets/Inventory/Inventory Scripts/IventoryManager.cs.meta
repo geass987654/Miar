@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 05d5f4758f9eb834c9b657f549952e89
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences:
+  - playerBag: {instanceID: 0}
+  - slotGrid: {instanceID: 0}
+  - slotPrefab: {instanceID: 0}
+  - itemDescription: {instanceID: 0}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

@@ -1,17 +1,20 @@
 using System.Buffers.Text;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditor.Tilemaps;
 using UnityEngine;
 
 public class Player : MonoBehaviour
 {
     [SerializeField] private Rigidbody2D rb;
+    [SerializeField] private GameObject bag;
 
     [SerializeField] private float moveSpeed = 4f;
 
     private Animator animator;
 
     private Vector2 direction = Vector2.zero;
+    private bool isBagOpen;
 
     private void Awake()
     {
@@ -23,6 +26,7 @@ public class Player : MonoBehaviour
     {
         ReadPlayerInput();
         SwitchAnim();
+        OpenBag();
     }
 
     private void FixedUpdate()
@@ -50,5 +54,14 @@ public class Player : MonoBehaviour
     void Move()
     {
         rb.MovePosition(rb.position + direction.normalized * (moveSpeed * Time.fixedDeltaTime));
+    }
+
+    void OpenBag()
+    {
+        if (Input.GetKeyDown(KeyCode.B))
+        {
+            isBagOpen = !isBagOpen;
+            bag.SetActive(isBagOpen);
+        }
     }
 }
