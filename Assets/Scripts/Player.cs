@@ -1,20 +1,21 @@
 using System.Buffers.Text;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEditor.Tilemaps;
 using UnityEngine;
 
 public class Player : MonoBehaviour
 {
     [SerializeField] private Rigidbody2D rb;
-    [SerializeField] private GameObject bag;
+    [SerializeField] private GameObject playerBag;  //顯示的背包UI
 
     [SerializeField] private float moveSpeed = 4f;
 
     private Animator animator;
 
     private Vector2 direction = Vector2.zero;
-    private bool isBagOpen;
+    private bool isBagOpen = false;
 
     private void Awake()
     {
@@ -60,8 +61,11 @@ public class Player : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.B))
         {
+            //當背包被打叉關掉，isBagOpen = false，簡化為以下程式碼
+            isBagOpen = playerBag.activeSelf;
+
             isBagOpen = !isBagOpen;
-            bag.SetActive(isBagOpen);
+            playerBag.SetActive(isBagOpen);
         }
     }
 }
