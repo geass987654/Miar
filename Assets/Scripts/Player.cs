@@ -9,6 +9,7 @@ public class Player : MonoBehaviour
 {
     [SerializeField] private Rigidbody2D rb;
     [SerializeField] private GameObject playerBag;  //顯示的背包UI
+    [SerializeField] private GameObject Compiler;
 
     [SerializeField] private float moveSpeed = 4f;
 
@@ -16,6 +17,7 @@ public class Player : MonoBehaviour
 
     private Vector2 direction = Vector2.zero;
     private bool isBagOpen = false;
+    private bool isCompilerOpen = false;
 
     private void Awake()
     {
@@ -28,6 +30,7 @@ public class Player : MonoBehaviour
         ReadPlayerInput();
         SwitchAnim();
         OpenBag();
+        OpenCompiler();
     }
 
     private void FixedUpdate()
@@ -66,6 +69,16 @@ public class Player : MonoBehaviour
 
             isBagOpen = !isBagOpen;
             playerBag.SetActive(isBagOpen);
+        }
+    }
+    void OpenCompiler()
+    {
+        if (Input.GetKeyDown(KeyCode.V))
+        {
+            isCompilerOpen = Compiler.activeSelf;
+
+            isCompilerOpen = !isCompilerOpen;
+            Compiler.SetActive(isCompilerOpen);
         }
     }
 }

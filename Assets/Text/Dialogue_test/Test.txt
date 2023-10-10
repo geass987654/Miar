@@ -1,0 +1,8 @@
+﻿Player
+哈囉!
+Sensei
+有什麼事嗎?
+Player
+今天天氣真好~
+Sensei
+嗯!你說的對!
