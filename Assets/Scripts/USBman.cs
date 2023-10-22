@@ -9,7 +9,6 @@ public class USBman : MonoBehaviour
     private Animator animator;
 
     [SerializeField] private float moveSpeed;
-    private float horizontal, vertical;
     private Vector2 direction = Vector2.zero;
     private bool isBagOpen = false;
 

@@ -17,9 +17,9 @@ public class ItemOnWorld : MonoBehaviour
         最後銷毀在場景中的物件，營造出道具被拾取的效果。
      */
 
-    private void OnTriggerEnter2D(Collider2D other)
+    private void OnTriggerEnter2D(Collider2D collision)
     {
-        if (other.gameObject.CompareTag("Player"))
+        if (collision.gameObject.CompareTag("Player"))
         {
             AddNewItem();
             Destroy(this.gameObject);
