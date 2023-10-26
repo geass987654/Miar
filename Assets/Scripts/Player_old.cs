@@ -1,21 +1,26 @@
+using System.Buffers.Text;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
+using UnityEditor.Tilemaps;
 using UnityEngine;
 
-public class USBman : MonoBehaviour
+public class Player_old : MonoBehaviour
 {
     [SerializeField] private Rigidbody2D rb;
-    [SerializeField] private GameObject mybag;  //顯示的背包UI
+    [SerializeField] private GameObject playerBag;  //顯示的背包UI
+
+    [SerializeField] private float moveSpeed = 4f;
+
     private Animator animator;
 
-    [SerializeField] private float moveSpeed;
     private Vector2 direction = Vector2.zero;
     private bool isBagOpen = false;
 
     private void Awake()
     {
-        animator = GetComponent<Animator>();
         rb = GetComponent<Rigidbody2D>();
+        animator = GetComponent<Animator>();
     }
 
     private void Update()
@@ -30,6 +35,7 @@ public class USBman : MonoBehaviour
         Move();
     }
 
+
     void ReadPlayerInput()
     {
         direction.x = Input.GetAxisRaw("Horizontal");
@@ -40,16 +46,15 @@ public class USBman : MonoBehaviour
     {
         if (direction != Vector2.zero)
         {
-            animator.SetFloat("horizontal", direction.x);
-            animator.SetFloat("vertical", direction.y);
+            animator.SetFloat("Horizontal", direction.x);
+            animator.SetFloat("Vertical", direction.y);
         }
-
-        animator.SetFloat("magnitude", direction.sqrMagnitude);
+        animator.SetFloat("Magnitude", direction.sqrMagnitude);
     }
 
     void Move()
     {
-        rb.MovePosition(rb.position + direction.normalized *  (moveSpeed * Time.fixedDeltaTime));
+        rb.MovePosition(rb.position + direction.normalized * (moveSpeed * Time.fixedDeltaTime));
     }
 
     void OpenBag()
@@ -57,10 +62,10 @@ public class USBman : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.B))
         {
             //當背包被打叉關掉，isBagOpen = false，簡化為以下程式碼
-            isBagOpen = mybag.activeSelf;
+            isBagOpen = playerBag.activeSelf;
 
             isBagOpen = !isBagOpen;
-            mybag.SetActive(isBagOpen);
+            playerBag.SetActive(isBagOpen);
         }
     }
 }

@@ -6,7 +6,7 @@ using UnityEngine;
 public class ItemOnWorld : MonoBehaviour
 {
     public Item thisItem;
-    public Iventory playerInventory;
+    public Inventory playerBag;
 
     /*
         若玩家觸碰到道具，也就是道具和玩家發生碰撞，將該道具加入到 itemList 中，
@@ -28,16 +28,16 @@ public class ItemOnWorld : MonoBehaviour
 
     private void AddNewItem()
     {
-        if (!playerInventory.itemList.Contains(thisItem))
+        if (!playerBag.itemList.Contains(thisItem))
         {
-            //playerInventory.itemList.Add(thisItem);
-            //IventoryManager.CreateNewItem(thisItem);
+            //playerBag.itemList.Add(thisItem);
+            //InventoryManager.CreateNewItem(thisItem);
 
-            for(int i = 0; i < playerInventory.itemList.Count; i++)
+            for (int i = 0; i < playerBag.itemList.Count; i++)
             {
-                if (playerInventory.itemList[i] == null)
+                if (playerBag.itemList[i] == null)
                 {
-                    playerInventory.itemList[i] = thisItem;
+                    playerBag.itemList[i] = thisItem;
                     break;
                 }
             }
@@ -47,6 +47,6 @@ public class ItemOnWorld : MonoBehaviour
             thisItem.itemNum ++;
         }
 
-        IventoryManager.RefreshItem();
+        InventoryManager.RefreshItem();
     }
 }

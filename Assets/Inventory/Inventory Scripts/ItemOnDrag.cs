@@ -6,7 +6,7 @@ using UnityEngine.EventSystems;
 public class ItemOnDrag : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler
 {
     public Transform originalParent;    //道具拖曳前在哪一個方格
-    public Iventory playerBag;          //記錄用的背包
+    public Inventory playerBag;          //記錄用的背包
     public int currentItemIndex;        //記錄用的背包中(playerBag)道具的編號
 
     //當用游標拖曳方格中的道具時，可將其移動到其他空的方格，若其他方格已有道具，則兩者互換；

@@ -1,26 +1,21 @@
-using System.Buffers.Text;
 using System.Collections;
 using System.Collections.Generic;
-using Unity.VisualScripting;
-using UnityEditor.Tilemaps;
 using UnityEngine;
 
 public class Player : MonoBehaviour
 {
     [SerializeField] private Rigidbody2D rb;
-    [SerializeField] private GameObject playerBag;  //顯示的背包UI
-
-    [SerializeField] private float moveSpeed = 4f;
-
+    public GameObject playerBag;  //顯示的背包UI
     private Animator animator;
 
+    [SerializeField] private float moveSpeed;
     private Vector2 direction = Vector2.zero;
     private bool isBagOpen = false;
 
     private void Awake()
     {
-        rb = GetComponent<Rigidbody2D>();
         animator = GetComponent<Animator>();
+        rb = GetComponent<Rigidbody2D>();
     }
 
     private void Update()
@@ -35,7 +30,6 @@ public class Player : MonoBehaviour
         Move();
     }
 
-
     void ReadPlayerInput()
     {
         direction.x = Input.GetAxisRaw("Horizontal");
@@ -46,15 +40,16 @@ public class Player : MonoBehaviour
     {
         if (direction != Vector2.zero)
         {
-            animator.SetFloat("Horizontal", direction.x);
-            animator.SetFloat("Vertical", direction.y);
+            animator.SetFloat("horizontal", direction.x);
+            animator.SetFloat("vertical", direction.y);
         }
-        animator.SetFloat("Magnitude", direction.sqrMagnitude);
+
+        animator.SetFloat("magnitude", direction.sqrMagnitude);
     }
 
     void Move()
     {
-        rb.MovePosition(rb.position + direction.normalized * (moveSpeed * Time.fixedDeltaTime));
+        rb.MovePosition(rb.position + direction.normalized *  (moveSpeed * Time.fixedDeltaTime));
     }
 
     void OpenBag()

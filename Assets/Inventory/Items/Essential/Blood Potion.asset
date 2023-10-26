@@ -10,9 +10,11 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 39607e5903f232348a507fe33818603d, type: 3}
-  m_Name: Sword
+  m_Name: Blood Potion
   m_EditorClassIdentifier: 
-  itemName: 
-  itemImage: {fileID: 21300000, guid: 03dd1ef6fb163214c9e1ac0242dab3ba, type: 3}
+  itemName: Blood Potion
+  itemImage: {fileID: 21300000, guid: 04698343aaab8ae49ad5452cdc43bc2f, type: 3}
   itemNum: 1
-  itemInfo: This is a sword.
+  itemAttribute: Essential
+  itemInfo: "\u9019\u662F\u4E00\u74F6\u5145\u6EFF\u6D3B\u529B\u7684\u85E5\u5291\u3002"
+  equip: 0
