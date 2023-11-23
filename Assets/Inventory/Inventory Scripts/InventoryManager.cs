@@ -27,6 +27,10 @@ public class InventoryManager : MonoBehaviour
     public List<GameObject> essentialSlots = new List<GameObject>();   //儲存背包中的道具
     public List<GameObject> chipSlots = new List<GameObject>();        //儲存背包中的道具
 
+    public Inventory shortCutBarBag;
+    public GameObject shortCutBar;
+    public List<GameObject> shortCutBarSlots = new List<GameObject>();
+
     //static InventoryManager instance;
     //public Inventory[] playerBag = new Inventory[3];             //紀錄背包中的道具
     //public GameObject[] slotGrid = new GameObject[3];            //方格排列
@@ -94,11 +98,12 @@ public class InventoryManager : MonoBehaviour
         RefreshItemOnEquipment();
         RefreshItemOnEssential();
         RefreshItemOnChip();
+        RefreshItemOnShortCurBar();
     }
 
     public static void RefreshItemOnEquipment()
     {
-        Debug.Log("equipment start");
+        //Debug.Log("equipment start");
         for (int i = 0; i < instance.equipment.transform.childCount; i++)
         {
             if (instance.equipment.transform.childCount == 0)
@@ -106,7 +111,7 @@ public class InventoryManager : MonoBehaviour
                 break;
             }
             Destroy(instance.equipment.transform.GetChild(i).gameObject);
-            Debug.Log("equipment destroy" + i);
+            //Debug.Log("equipment destroy" + i);
             instance.equipmentSlots.Clear();
         }
 
@@ -117,14 +122,14 @@ public class InventoryManager : MonoBehaviour
             instance.equipmentSlots[i].transform.SetParent(instance.equipment.transform);
             instance.equipmentSlots[i].GetComponent<Slot>().slotIndex = i;
             instance.equipmentSlots[i].GetComponent<Slot>().SetupSlot(instance.equipmentBag.itemList[i]);
-            Debug.Log("equipment instantiate" + i);
+            //Debug.Log("equipment instantiate" + i);
 
             instance.equipment.transform.GetChild(i).transform.GetChild(0).GetComponent<ItemOnDrag>().playerBag = instance.equipmentBag;
         }
     }
     public static void RefreshItemOnEssential()
     {
-        Debug.Log("essential start");
+        //Debug.Log("essential start");
         for (int i = 0; i < instance.essential.transform.childCount; i++)
         {
             if (instance.essential.transform.childCount == 0)
@@ -132,7 +137,7 @@ public class InventoryManager : MonoBehaviour
                 break;
             }
             Destroy(instance.essential.transform.GetChild(i).gameObject);
-            Debug.Log("essential destroy" + i);
+            //Debug.Log("essential destroy" + i);
             instance.essentialSlots.Clear();
         }
 
@@ -143,7 +148,7 @@ public class InventoryManager : MonoBehaviour
             instance.essentialSlots[i].transform.SetParent(instance.essential.transform);
             instance.essentialSlots[i].GetComponent<Slot>().slotIndex = i;
             instance.essentialSlots[i].GetComponent<Slot>().SetupSlot(instance.essentialBag.itemList[i]);
-            Debug.Log("essential instantiate" + i);
+            //Debug.Log("essential instantiate" + i);
             instance.essential.transform.GetChild(i).transform.GetChild(0).GetComponent<ItemOnDrag>().playerBag = instance.essentialBag;
         }
     }
@@ -167,6 +172,32 @@ public class InventoryManager : MonoBehaviour
             instance.chipSlots[i].GetComponent<Slot>().slotIndex = i;
             instance.chipSlots[i].GetComponent<Slot>().SetupSlot(instance.chipBag.itemList[i]);
             instance.chip.transform.GetChild(i).transform.GetChild(0).GetComponent<ItemOnDrag>().playerBag = instance.chipBag;
+        }
+    }
+    public static void RefreshItemOnShortCurBar()
+    {
+        Debug.Log("ShortCutBar start");
+        for (int i = 0; i < instance.shortCutBar.transform.childCount; i++)
+        {
+            if (instance.shortCutBar.transform.childCount == 0)
+            {
+                break;
+            }
+            Destroy(instance.shortCutBar.transform.GetChild(i).gameObject);
+            Debug.Log("ShortCutBar destroy" + i);
+            instance.shortCutBarSlots.Clear();
+        }
+
+        for (int i = 0; i < instance.shortCutBarBag.itemList.Count; i++)
+        {
+            //CreateNewItem(instance.playerBag.itemList[i]);
+            instance.shortCutBarSlots.Add(Instantiate(instance.emptySlot));
+            instance.shortCutBarSlots[i].transform.SetParent(instance.shortCutBar.transform);
+            instance.shortCutBarSlots[i].GetComponent<Slot>().slotIndex = i;
+            instance.shortCutBarSlots[i].GetComponent<Slot>().SetupSlot(instance.shortCutBarBag.itemList[i]);
+            Debug.Log("ShortCutBar instantiate" + i);
+
+            instance.shortCutBar.transform.GetChild(i).transform.GetChild(0).GetComponent<ItemOnDrag>().playerBag = instance.shortCutBarBag;
         }
     }
 

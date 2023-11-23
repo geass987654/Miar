@@ -200,10 +200,7 @@ MonoBehaviour:
   originalParent: {fileID: 0}
   playerBag: {fileID: 11400000, guid: bee555021d221624babf76a8a5cd239a, type: 2}
   currentItemIndex: 0
-  container: {fileID: 0}
-  equipment: {fileID: 11400000, guid: bee555021d221624babf76a8a5cd239a, type: 2}
-  essential: {fileID: 11400000, guid: 9c140ddc039ed70438f697b388f33313, type: 2}
-  chip: {fileID: 11400000, guid: 2d82fd974eba12849b944bc4762aad13, type: 2}
+  topUI: {fileID: 0}
 --- !u!225 &271058938242654266
 CanvasGroup:
   m_ObjectHideFlags: 0

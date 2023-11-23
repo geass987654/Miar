@@ -9,6 +9,8 @@ public class ItemOnDrag : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDr
     public Inventory playerBag;          //記錄用的背包
     public int currentItemIndex;        //記錄用的背包中(playerBag)道具的編號
 
+    public Transform topUI;
+
     //當用游標拖曳方格中的道具時，可將其移動到其他空的方格，若其他方格已有道具，則兩者互換；
 
     /*
@@ -16,11 +18,17 @@ public class ItemOnDrag : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDr
         並可用 pointerCurrentRaycast，回傳碰到的第一個 UI，若非UI則回傳null；而eventData在這邊代表滑鼠游標
     */
 
+    private void Awake()
+    {
+        topUI = GameObject.Find("Canvas").transform;
+    }
+
     public void OnBeginDrag(PointerEventData eventData)
     {
         originalParent = transform.parent;  //紀錄Slot為originalParent
         currentItemIndex = originalParent.GetComponent<Slot>().slotIndex;   //取得方格編號
-        transform.SetParent(transform.parent.parent);   //開始拖曳時的Item設為Grid的子物件
+        //transform.SetParent(transform.parent.parent);   //開始拖曳時的Item設為Grid的子物件
+        transform.SetParent(topUI);   //開始拖曳時的Item設為Grid的子物件
         transform.position = eventData.position;        //開始拖曳時的Item位置設為游標位置
         GetComponent<CanvasGroup>().blocksRaycasts = false; //關閉blocksRaycasts功能，開啟射線
     }
@@ -28,7 +36,7 @@ public class ItemOnDrag : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDr
     public void OnDrag(PointerEventData eventData)
     {
         transform.position = eventData.position;     //將拖曳中的Item位置設為游標位置
-        //Debug.Log(eventData.pointerCurrentRaycast.gameObject.name);
+        Debug.Log(eventData.pointerCurrentRaycast.gameObject.name);
     }
 
     /*
@@ -50,7 +58,7 @@ public class ItemOnDrag : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDr
         if (eventData.pointerCurrentRaycast.gameObject != null)
         {
             //偵測到底下是另一個道具
-            if (eventData.pointerCurrentRaycast.gameObject.name == "Item Image")
+            if(eventData.pointerCurrentRaycast.gameObject.name == "Item Image")
             {
                 //設定道具的父物件為方格(Slot)，位置為方格的位置
                 transform.SetParent(eventData.pointerCurrentRaycast.gameObject.transform.parent.parent);

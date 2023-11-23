@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class Player : MonoBehaviour
@@ -7,6 +8,11 @@ public class Player : MonoBehaviour
     [SerializeField] private Rigidbody2D rb;
     public GameObject playerBag;  //顯示的背包UI
     private Animator animator;
+
+    public string collisionTag = "";
+    public bool isCollision = false;
+    public GameObject dialogueUI;
+    public GameObject lockUI;
 
     [SerializeField] private float moveSpeed;
     private Vector2 direction = Vector2.zero;
@@ -23,6 +29,7 @@ public class Player : MonoBehaviour
         ReadPlayerInput();
         SwitchAnim();
         OpenBag();
+        Interaction();
     }
 
     private void FixedUpdate()
@@ -63,4 +70,42 @@ public class Player : MonoBehaviour
             playerBag.SetActive(isBagOpen);
         }
     }
+
+    void Interaction()
+    {
+        if (isCollision && Input.GetKeyDown(KeyCode.F))
+        {
+            if (collisionTag == "NPC")
+            {
+                dialogueUI.SetActive(true);
+            }
+            else if(collisionTag == "Lock")
+            {
+                lockUI.SetActive(true);
+            }
+
+        }
+    }
+
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        if (collision.transform.gameObject.CompareTag("NPC") || collision.transform.gameObject.CompareTag("Lock"))
+        {
+            isCollision = true;
+            collisionTag = collision.transform.gameObject.tag;
+            collision.transform.GetChild(0).gameObject.SetActive(true);
+        }
+    }
+
+    private void OnTriggerExit2D(Collider2D collision)
+    {
+        if (collision.transform.gameObject.CompareTag("NPC") || collision.transform.gameObject.CompareTag("Lock"))
+        {
+            isCollision = false;
+            collisionTag = "";
+            collision.transform.GetChild(0).gameObject.SetActive(false);
+        }
+    }
+
+
 }
