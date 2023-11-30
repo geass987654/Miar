@@ -6,13 +6,14 @@ using UnityEngine;
 public class Player : MonoBehaviour
 {
     [SerializeField] private Rigidbody2D rb;
-    public GameObject playerBag;  //顯示的背包UI
+    public GameObject playerBag;                //顯示的背包UI
     private Animator animator;
 
     public string collisionTag = "";
     public bool isCollision = false;
-    public GameObject dialogueUI;
-    public GameObject lockUI;
+    //public GameObject dialogueUI;               //對話框UI
+    //public GameObject lockUI;                   //密碼鎖UI
+    //public TextAsset textFile;
 
     [SerializeField] private float moveSpeed;
     private Vector2 direction = Vector2.zero;
@@ -22,6 +23,7 @@ public class Player : MonoBehaviour
     {
         animator = GetComponent<Animator>();
         rb = GetComponent<Rigidbody2D>();
+        //textFile = dialogueUI.GetComponent<DialogueSystem>().textFile;
     }
 
     private void Update()
@@ -29,7 +31,7 @@ public class Player : MonoBehaviour
         ReadPlayerInput();
         SwitchAnim();
         OpenBag();
-        Interaction();
+        //Interaction();
     }
 
     private void FixedUpdate()
@@ -70,13 +72,14 @@ public class Player : MonoBehaviour
             playerBag.SetActive(isBagOpen);
         }
     }
-
+    /*
     void Interaction()
     {
         if (isCollision && Input.GetKeyDown(KeyCode.F))
         {
             if (collisionTag == "NPC")
             {
+                dialogueUI.GetComponent<DialogueSystem>().GetTextFromFile()
                 dialogueUI.SetActive(true);
             }
             else if(collisionTag == "Lock")
@@ -106,6 +109,5 @@ public class Player : MonoBehaviour
             collision.transform.GetChild(0).gameObject.SetActive(false);
         }
     }
-
-
+    */
 }

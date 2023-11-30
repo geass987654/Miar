@@ -5,55 +5,53 @@ using UnityEngine.UI;
 
 public class DialLock : MonoBehaviour
 {
-    public Transform moveObj;
-    public Transform upPos;
-    public Transform startPos;
-    public Transform downPos;
-    public Transform targetPos;
     public Text upText;
     public Text middleText;
     public Text downText;
     public int num = 0;
-    public float moveSpeed = 5f;
+    public float movingPeriod = 0.5f;
     public bool isMoving = false;
 
-    private void Update()
-    {
-        MoveNumber();
-    }
 
-
-    public void MoveNumber()
+    IEnumerator MoveNumber(Vector2 targetPos, float duration)
     {
-        if (isMoving)
+        isMoving = true;
+        float time = 0f;
+        Vector2 startPos = transform.position;
+            
+        while(time < duration)
         {
-            moveObj.position = Vector2.Lerp(moveObj.position, targetPos.position, moveSpeed * Time.deltaTime);
-
-            if (Vector2.Distance(moveObj.position, targetPos.position) < 0.5f)
-            {
-                moveObj.position = targetPos.position;
-                middleText.text = num.ToString();
-                moveObj.position = startPos.position;
-                isMoving = false;
-            }
+            transform.position = Vector2.Lerp(startPos, targetPos, time / duration);
+            time += Time.deltaTime;
+            yield return null;
         }
+
+        transform.position = targetPos;
+
+        middleText.text = num.ToString();
+        transform.position = startPos;
+        isMoving = false;
     }
 
     public void PageUp()
     {
-        num = (num + 1) % 10;
+        if(!isMoving)
+        {
+            num = (num + 1) % 10;
 
-        targetPos = upPos;
-        downText.text = num.ToString();
-        isMoving = true;
+            StartCoroutine(MoveNumber(upText.transform.position, movingPeriod));
+            downText.text = num.ToString();
+        }
     }
 
     public void PageDown()
     {
-        num = (num + 9) % 10;
+        if (!isMoving)
+        {
+            num = (num + 9) % 10;
 
-        targetPos = downPos;
-        upText.text = num.ToString();
-        isMoving = true;
+            StartCoroutine(MoveNumber(downText.transform.position, movingPeriod));
+            upText.text = num.ToString();
+        }
     }
 }
