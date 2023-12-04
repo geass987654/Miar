@@ -7,12 +7,12 @@ public class Message : MonoBehaviour
 {
     private Queue<string> messages = new Queue<string>();
     [SerializeField] private Text messageText;
-    private bool isTextShowing= false;
+    public bool isTextShowing= false;
     private float textDelay = 0.05f;
-    private float textShowingTime = 2f;
+    private float textShowingTime = 0.8f;
 
 
-    private void Enable()
+    private void OnEnable()
     {
         messageText.text = "";
     }
@@ -48,6 +48,7 @@ public class Message : MonoBehaviour
 
     public void SetMessage(string s)
     {
+        messages.Clear();
         messages.Enqueue(s);
     }
 }

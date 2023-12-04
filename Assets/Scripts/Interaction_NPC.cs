@@ -18,6 +18,11 @@ public class Interaction_NPC : MonoBehaviour
 
             f.SetActive(false);
             enabled = false;
+
+            if (gameObject.tag == "Scroll")
+            {
+                Destroy(gameObject);
+            }
         }
     }
 

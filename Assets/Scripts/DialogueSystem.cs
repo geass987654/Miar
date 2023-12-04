@@ -16,7 +16,10 @@ public class DialogueSystem : MonoBehaviour
     public float textDelay = 0.05f;     //文字輸出時，每個字的延遲時間
 
     [Header("頭像")]
-    public Sprite facePlayer, faceSensei, faceSalesman, faceUnknown; //代表主角、師傅、商店、未知
+    public Sprite facePlayer;
+    public Sprite faceSensei;
+    public Sprite faceSalesman;
+    public Sprite faceUnknown;   //代表主角、師傅、商店、未知
 
     public bool isTextFinished, isTextCanceled; //文字是否正在輸出，文字是否取消逐字輸出
 

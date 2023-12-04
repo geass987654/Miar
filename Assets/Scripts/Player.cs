@@ -9,15 +9,14 @@ public class Player : MonoBehaviour
     public GameObject playerBag;                //顯示的背包UI
     private Animator animator;
 
-    public string collisionTag = "";
-    public bool isCollision = false;
-    //public GameObject dialogueUI;               //對話框UI
-    //public GameObject lockUI;                   //密碼鎖UI
-    //public TextAsset textFile;
+    //public string collisionTag = "";
+    //public bool isCollision = false;
 
     [SerializeField] private float moveSpeed;
     private Vector2 direction = Vector2.zero;
     private bool isBagOpen = false;
+
+    public bool isFreezed = false;
 
     private void Awake()
     {
@@ -28,10 +27,13 @@ public class Player : MonoBehaviour
 
     private void Update()
     {
-        ReadPlayerInput();
-        SwitchAnim();
-        OpenBag();
-        //Interaction();
+        if (!isFreezed)
+        {
+            ReadPlayerInput();
+            SwitchAnim();
+            OpenBag();
+            //Interaction();
+        }
     }
 
     private void FixedUpdate()
@@ -71,6 +73,11 @@ public class Player : MonoBehaviour
             isBagOpen = !isBagOpen;
             playerBag.SetActive(isBagOpen);
         }
+    }
+
+    public void SetDirection(Vector2 vector2)
+    {
+        direction = vector2;
     }
     /*
     void Interaction()
