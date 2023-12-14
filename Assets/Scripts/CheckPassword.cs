@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class CheckPassword : MonoBehaviour
 {
@@ -9,10 +10,16 @@ public class CheckPassword : MonoBehaviour
     string realPassword;
     public GameObject messageUI;
 
-    private void Start()
+    [SerializeField] private GameObject[] equipmentPrefab;
+    [SerializeField] private GameObject[] essentialPreFab;
+    private Vector2 lockBoxPos;
+    private string PrefabType;
+    [SerializeField] private Image question;
+
+    private void Awake()
     {
         inputPassword = "";
-        realPassword = "9527";
+        realPassword = "";
     }
 
     public void CheckBtn()
@@ -28,12 +35,29 @@ public class CheckPassword : MonoBehaviour
 
             if (inputPassword == realPassword)
             {
-                transform.parent.gameObject.SetActive(false);
-                messageUI.GetComponent<Message>().SetMessage("居然讓你答對了!");
+                transform.parent.parent.gameObject.SetActive(false);
+
+                for(int i = 0; i < digits.Length; i++)
+                {
+                    digits[i].GetComponent<DialLock>().Initialize();
+                }
+
+                messageUI.GetComponent<Message>().SetMessage("恭喜答對");
+
+                switch (PrefabType)
+                {
+                    case "equipment":
+                        Instantiate(equipmentPrefab[Random.Range(0, 2)], lockBoxPos, Quaternion.identity);
+                        break;
+                    case "essential":
+                        Instantiate(essentialPreFab[Random.Range(0, 2)], lockBoxPos, Quaternion.identity);
+                        break;
+                }
+
             }
             else
             {
-                messageUI.GetComponent<Message>().SetMessage("蛤?四位數密碼也不會喔?這麼肉咖!");
+                messageUI.GetComponent<Message>().SetMessage("密碼錯誤");
             }
 
             inputPassword = "";
@@ -45,10 +69,30 @@ public class CheckPassword : MonoBehaviour
         if (!messageUI.GetComponent<Message>().isTextShowing)
         {
             inputPassword = "";
-            transform.parent.gameObject.SetActive(false);
+            transform.parent.parent.gameObject.SetActive(false);
 
             messageUI.SetActive(true);
-            messageUI.GetComponent<Message>().SetMessage("提示:'唐伯虎'的終身代號");
+            messageUI.GetComponent<Message>().SetMessage("再接再勵");
         }
+    }
+
+    public void SetPassword(string password)
+    {
+        realPassword = password;
+    }
+
+    public void SetItemPos(Vector2 position)
+    {
+        lockBoxPos = position;
+    }
+
+    public void SetPrefabType(string type)
+    {
+        PrefabType = type;
+    }
+
+    public void SetQuestion(Sprite questionPicture)
+    {
+        question.sprite = questionPicture;
     }
 }

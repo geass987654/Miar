@@ -30,7 +30,7 @@ public class ItemOnDrag : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDr
         //transform.SetParent(transform.parent.parent);   //開始拖曳時的Item設為Grid的子物件
         transform.SetParent(topUI);   //開始拖曳時的Item設為Grid的子物件
         transform.position = eventData.position;        //開始拖曳時的Item位置設為游標位置
-        GetComponent<CanvasGroup>().blocksRaycasts = false; //關閉blocksRaycasts功能，開啟射線
+        GetComponent<CanvasGroup>().blocksRaycasts = false; //關閉blocksRaycasts功能，開啟射線，避免被拖曳中的UI阻擋
     }
 
     public void OnDrag(PointerEventData eventData)

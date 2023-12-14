@@ -54,4 +54,12 @@ public class DialLock : MonoBehaviour
             upText.text = num.ToString();
         }
     }
+
+    public void Initialize()
+    {
+        num = 0;
+        upText.text = "9";
+        middleText.text = "0";
+        downText.text = "1";
+    }
 }
