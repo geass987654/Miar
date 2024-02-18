@@ -123,16 +123,16 @@ public class DialogueSystem : MonoBehaviour
         textIndex++;            //遞增到下一行對話
     }
 
-    public void SetText(string text)
-    {
-        textList.Clear();
-        textIndex = 0;
+    //public void SetText(string text)
+    //{
+    //    textList.Clear();
+    //    textIndex = 0;
 
-        string[] lines = text.Split("\n");
+    //    string[] lines = text.Split("\n");
 
-        foreach (string line in lines)
-        {
-            textList.Add(line);
-        }
-    }
+    //    foreach (string line in lines)
+    //    {
+    //        textList.Add(line);
+    //    }
+    //}
 }

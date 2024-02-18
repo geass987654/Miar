@@ -7,6 +7,7 @@ TagManager:
   - NPC
   - Lock
   - Scroll
+  - Enemy
   layers:
   - Default
   - TransparentFX
