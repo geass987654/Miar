@@ -17,7 +17,6 @@ public class Player : Singleton<Player>
 
     private bool isBagOpen = false;
     public bool isFreezed = false;
-    public bool isHurt = false;
 
     [SerializeField] private Transform weaponCollider;
 
@@ -49,11 +48,6 @@ public class Player : Singleton<Player>
 
     private void FixedUpdate()
     {
-        if (knockBack.IsKnockedBack)
-        {
-            return;
-        }
-
         Move();
     }
 
@@ -81,6 +75,11 @@ public class Player : Singleton<Player>
 
     private void Move()
     {
+        if (knockBack.IsKnockedBack)
+        {
+            return;
+        }
+
         rb.MovePosition(rb.position + direction * (moveSpeed * Time.fixedDeltaTime));
     }
 

@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -7,6 +8,8 @@ public class Health : MonoBehaviour
 {
     private const int maxHealth = 5;
     private int currentHealth;
+    private bool canTakeDamage = true;
+    private float damageRecoveryTime = 1f;
     [SerializeField] private GameObject HealthPointBar;
     private GameObject[] Hearts;
     [SerializeField] private Sprite fullHeart;
@@ -20,7 +23,6 @@ public class Health : MonoBehaviour
 
     private void Awake()
     {
-        currentHealth = maxHealth;
         Hearts = new GameObject[maxHealth];
 
         for(int i = 0; i < HealthPointBar.transform.childCount; i++)
@@ -33,31 +35,67 @@ public class Health : MonoBehaviour
         flash = transform.GetComponent<Flash>();
     }
 
-    public void TakeDamage(int damageAmount, Transform damageSource)
+    private void Start()
     {
-        for(int i = 0; i < damageAmount; i++)
+        currentHealth = maxHealth;
+    }
+
+    private void OnCollisionStay2D(Collision2D collision)
+    {
+        EnemyAI enemyAI = collision.transform.GetComponent<EnemyAI>();
+
+        if (enemyAI != null && canTakeDamage)
         {
-            if(currentHealth <= 0)
-            {
-                Time.timeScale = 0;
+            TakeDamage(1, collision.transform);
+        }
+    }
 
-                if (!gameOver.activeSelf)
-                {
-                    gameOver.SetActive(true);
-                }
-
-                break;
-            }
-
-            Hearts[currentHealth - 1].GetComponent<Image>().sprite = emptyHeart;
-            //Debug.Log("currentHealth = " + currentHealth);
-            currentHealth--;
+    public void TakeDamage(int damageAmount, Transform hitTransform)
+    {
+        if (!canTakeDamage)
+        {
+            return;
         }
 
-        knockBack.GetKnockedBack(damageSource.transform, knockBackThrust);
-
+        knockBack.GetKnockedBack(hitTransform, knockBackThrust);
         StartCoroutine(flash.FlashRoutine());
+        canTakeDamage = false;
+        currentHealth -= damageAmount;
+        StartCoroutine(DamageRecoveryRoutine());
     }
+
+    private IEnumerator DamageRecoveryRoutine()
+    {
+        yield return new WaitForSeconds(damageRecoveryTime);
+        canTakeDamage = true;
+    }
+
+
+    //public void TakeDamage(int damageAmount, Transform damageSource)
+    //{
+    //    for(int i = 0; i < damageAmount; i++)
+    //    {
+    //        if(currentHealth <= 0)
+    //        {
+    //            Time.timeScale = 0;
+
+    //            if (!gameOver.activeSelf)
+    //            {
+    //                gameOver.SetActive(true);
+    //            }
+
+    //            break;
+    //        }
+
+    //        Hearts[currentHealth - 1].GetComponent<Image>().sprite = emptyHeart;
+    //        //Debug.Log("currentHealth = " + currentHealth);
+    //        currentHealth--;
+    //    }
+
+    //    knockBack.GetKnockedBack(damageSource.transform, knockBackThrust);
+
+    //    StartCoroutine(flash.FlashRoutine());
+    //}
 
     public void Heal(int healAmount)
     {

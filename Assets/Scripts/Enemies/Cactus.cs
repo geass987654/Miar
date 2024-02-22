@@ -8,13 +8,13 @@ public class Cactus : MonoBehaviour
 
     [SerializeField] private AudioSource audioSource_1;
 
-    private void OnCollisionEnter2D(Collision2D collision)
-    {
-        if (collision.gameObject.CompareTag("Player"))
-        {
-            collision.transform.GetComponent<Health>().TakeDamage(damageAmount, transform);
+    //private void OnCollisionEnter2D(Collision2D collision)
+    //{
+    //    if (collision.gameObject.CompareTag("Player"))
+    //    {
+    //        collision.transform.GetComponent<Health>().TakeDamage(damageAmount, transform);
             
-            audioSource_1.Play();
-        }
-    }
+    //        audioSource_1.Play();
+    //    }
+    //}
 }

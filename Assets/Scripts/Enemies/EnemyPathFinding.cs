@@ -22,11 +22,15 @@ public class EnemyPathFinding : MonoBehaviour
             return;
         }
         rb.MovePosition(rb.position + moveDirection * (moveSpeed * Time.fixedDeltaTime));
-
     }
 
     public void MoveTo(Vector2 targetPos)
     {
         moveDirection = targetPos;
+    }
+
+    public void StopMoving()
+    {
+        moveDirection = Vector2.zero;
     }
 }

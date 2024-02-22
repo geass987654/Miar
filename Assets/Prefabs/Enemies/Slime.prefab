@@ -10,7 +10,6 @@ GameObject:
   m_Component:
   - component: {fileID: 8239656324863910985}
   - component: {fileID: 9143581969165439511}
-  - component: {fileID: 7368332752235801469}
   - component: {fileID: 1936326600383018611}
   - component: {fileID: 881873636399311293}
   - component: {fileID: 3168948281858248716}
@@ -18,6 +17,7 @@ GameObject:
   - component: {fileID: 5433983263158940885}
   - component: {fileID: 1508090985150118200}
   - component: {fileID: 4473034651173787155}
+  - component: {fileID: 4377398746942258203}
   m_Layer: 0
   m_Name: Slime
   m_TagString: Enemy
@@ -33,7 +33,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1592527378349571245}
   serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 6.63, y: 2.64, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -92,27 +92,6 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
---- !u!95 &7368332752235801469
-Animator:
-  serializedVersion: 5
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1592527378349571245}
-  m_Enabled: 1
-  m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: 066156ff4f1c76047a6adeff043aa8a9, type: 2}
-  m_CullingMode: 0
-  m_UpdateMode: 0
-  m_ApplyRootMotion: 0
-  m_LinearVelocityBlending: 0
-  m_StabilizeFeet: 0
-  m_WarningMessage: 
-  m_HasTransformHierarchy: 1
-  m_AllowConstantClipSamplingOptimization: 1
-  m_KeepAnimatorStateOnDisable: 0
-  m_WriteDefaultValuesOnDisable: 0
 --- !u!50 &1936326600383018611
 Rigidbody2D:
   serializedVersion: 4
@@ -187,6 +166,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a15ecc4027fb16748acc28030976d9e2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  changeRoamingDircTime: 2
+  attackRange: 12
+  enemyType: {fileID: 4377398746942258203}
+  attackCooldown: 2
+  stopMovingWhileAttacking: 1
 --- !u!114 &2785310363093729778
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -241,3 +225,25 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   whiteFlashMat: {fileID: 2100000, guid: e0101d9c61c110747bcf4ea40c94abb9, type: 2}
   restoreDefaultMatTime: 0.1
+--- !u!114 &4377398746942258203
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1592527378349571245}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6ad4fb5970b812b499df2aaf3a3bc613, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  bulletPrefab: {fileID: 4599377247967594856, guid: 454905c6d42792a40a213640883cc04a, type: 3}
+  bulletMoveSpeed: 5
+  burstCount: 3
+  projectilePerBurst: 8
+  angleSpread: 120
+  startingDistance: 0.2
+  timeBetweenBursts: 1
+  restTime: 0.5
+  stagger: 0
+  oscillate: 0

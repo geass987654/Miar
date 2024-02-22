@@ -5,11 +5,10 @@ using UnityEngine;
 public class Projectile : MonoBehaviour
 {
     [SerializeField] private float moveSpeed = 20f;
-
     [SerializeField] private GameObject particleVFXPrefab;
-
-    private WeaponInfo weaponInfo;
-    private Vector3 startPos;
+    [SerializeField] private bool isEnemyProjectile = false;
+    [SerializeField] private float projectileRange = 10f;
+    private Vector2 startPos;
 
     private void Start()
     {
@@ -26,28 +25,42 @@ public class Projectile : MonoBehaviour
     {
         EnemyHealth enemyHealth = collision.GetComponent<EnemyHealth>();
         Indestructible indestructible = collision.GetComponent<Indestructible>();
+        Health health = collision.GetComponent<Health>();
 
-        if(!collision.isTrigger && (indestructible || enemyHealth))
+        if(!collision.isTrigger && (indestructible || enemyHealth || health))
         {
-            Instantiate(particleVFXPrefab, transform.position, transform.rotation);
-
-            Destroy(gameObject);
+            if((health && isEnemyProjectile) || (enemyHealth && !isEnemyProjectile))
+            {
+                health?.TakeDamage(1, transform);
+                Instantiate(particleVFXPrefab, transform.position, transform.rotation);
+                Destroy(gameObject);
+            }
+            else if(!collision.isTrigger && indestructible)
+            {
+                Instantiate(particleVFXPrefab, transform.position, transform.rotation);
+                Destroy(gameObject);
+            }
         }
     }
 
     private void MoveProjectile()
     {
-        transform.Translate(Vector3.right * (moveSpeed * Time.deltaTime));
+        transform.Translate(Vector2.right * (moveSpeed * Time.deltaTime));
     }
 
-    public void UpdateWeaponInfo(WeaponInfo weaponInfo)
+    public void UpdateProjectileRange(float projectileRange)
     {
-        this.weaponInfo = weaponInfo;
+        this.projectileRange = projectileRange;
+    }
+
+    public void UpdateMoveSpeed(float moveSpeed)
+    {
+        this.moveSpeed = moveSpeed;
     }
 
     private void DetectFireDistance()
     {
-        if (Vector3.Distance(transform.position, startPos) > weaponInfo.weaponRange)
+        if (Vector2.Distance(transform.position, startPos) > projectileRange)
         {
             Destroy(gameObject);
         }
