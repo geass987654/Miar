@@ -30,20 +30,31 @@ public class Player : Singleton<Player>
         knockBack = GetComponent<KnockBack>();
     }
 
+    private void Start()
+    {
+        ActiveInventory.Instance.EquipStartingWeapon();
+    }
+
     private void OnEnable()
     {
         playerControls.Enable();
     }
 
+    private void OnDisable()
+    {
+        playerControls.Disable();
+    }
+
     private void Update()
     {
-        if (!isFreezed)
+        if (isFreezed)
         {
-            //ReadPlayerInput();
-            PlayerInput();
-            SwitchAnim();
-            OpenBag();
+            return;
         }
+
+        PlayerInput();
+        SwitchAnim();
+        OpenBag();
     }
 
     private void FixedUpdate()
@@ -55,12 +66,6 @@ public class Player : Singleton<Player>
     {
         direction = playerControls.Movement.Move.ReadValue<Vector2>().normalized;
     }
-
-    //void ReadPlayerInput()
-    //{
-    //    direction.x = Input.GetAxisRaw("Horizontal");
-    //    direction.y = Input.GetAxisRaw("Vertical");
-    //}
 
     private void SwitchAnim()
     {
@@ -75,7 +80,7 @@ public class Player : Singleton<Player>
 
     private void Move()
     {
-        if (knockBack.IsKnockedBack)
+        if (knockBack.IsKnockedBack || Health.Instance.IsDead)
         {
             return;
         }

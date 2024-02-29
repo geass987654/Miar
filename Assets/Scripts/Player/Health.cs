@@ -2,33 +2,44 @@ using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
-public class Health : MonoBehaviour
+public class Health : Singleton<Health>
 {
+    [SerializeField] private float knockBackThrust = 10f;
+    [SerializeField] private GameObject playerDeathVFXPrefab;
+
+    private KnockBack knockBack;
+    private Flash flash;
     private const int maxHealth = 5;
     private int currentHealth;
     private bool canTakeDamage = true;
-    private float damageRecoveryTime = 1f;
-    [SerializeField] private GameObject HealthPointBar;
-    private GameObject[] Hearts;
-    [SerializeField] private Sprite fullHeart;
-    [SerializeField] private Sprite emptyHeart;
-    [SerializeField] private GameObject gameOver;
+    private float damageRecoveryTime = 0.5f;
+    private Slider healthSlider;
+    private const string HEALTH_SLIDER_TEXT = "Health Slider";
+    private const string SCENE_TEXT = "TestScene_0228";
+    public bool IsDead { get; private set; }
+    private Vector2 playerStartingPos;
 
-    private KnockBack knockBack;
-    [SerializeField] private float knockBackThrust = 10f;
+    //[SerializeField] private GameObject HealthPointBar;
+    //[SerializeField] private Sprite fullHeart;
+    //[SerializeField] private Sprite emptyHeart;
+    //[SerializeField] private GameObject gameOver;
+    //private GameObject[] Hearts;
 
-    private Flash flash;
 
-    private void Awake()
+
+    protected override void Awake()
     {
-        Hearts = new GameObject[maxHealth];
+        base.Awake();
 
-        for(int i = 0; i < HealthPointBar.transform.childCount; i++)
-        {
-            Hearts[i] = HealthPointBar.transform.GetChild(i).gameObject;
-        }
+        //Hearts = new GameObject[maxHealth];
+
+        //for(int i = 0; i < HealthPointBar.transform.childCount; i++)
+        //{
+        //    Hearts[i] = HealthPointBar.transform.GetChild(i).gameObject;
+        //}
 
         knockBack = transform.GetComponent<KnockBack>();
 
@@ -37,7 +48,10 @@ public class Health : MonoBehaviour
 
     private void Start()
     {
+        IsDead = false;
+        playerStartingPos = Player.Instance.transform.position;
         currentHealth = maxHealth;
+        UpdateHealthSlider();
     }
 
     private void OnCollisionStay2D(Collision2D collision)
@@ -47,6 +61,27 @@ public class Health : MonoBehaviour
         if (enemyAI != null && canTakeDamage)
         {
             TakeDamage(1, collision.transform);
+        }
+    }
+
+    public void Heal(int healingAmount)
+    {
+        if (IsDead)
+        {
+            return;
+        }
+
+        for(int i = 0; i < healingAmount; i++)
+        {
+            if(currentHealth < maxHealth)
+            {
+                currentHealth += 1;
+                UpdateHealthSlider();
+            }
+            else
+            {
+                return;
+            }
         }
     }
 
@@ -62,6 +97,8 @@ public class Health : MonoBehaviour
         canTakeDamage = false;
         currentHealth -= damageAmount;
         StartCoroutine(DamageRecoveryRoutine());
+        UpdateHealthSlider();
+        CheckPlayerDeath();
     }
 
     private IEnumerator DamageRecoveryRoutine()
@@ -70,6 +107,41 @@ public class Health : MonoBehaviour
         canTakeDamage = true;
     }
 
+    private void UpdateHealthSlider()
+    {
+        if(healthSlider == null)
+        {
+            healthSlider = GameObject.Find(HEALTH_SLIDER_TEXT).GetComponent<Slider>();
+        }
+
+        healthSlider.maxValue = maxHealth;
+        healthSlider.value = currentHealth;
+    }
+
+    private void CheckPlayerDeath()
+    {
+        if(currentHealth <= 0 && !IsDead)
+        {
+            IsDead = true;
+            Destroy(ActiveWeapon.Instance.gameObject);
+            currentHealth = 0;
+            Debug.Log("Player Death");
+            PlayerDeath();
+        }
+    }
+
+    private void PlayerDeath()
+    {
+        Invoke("ReloadScene", 2f);
+        Instantiate(playerDeathVFXPrefab, transform.position, Quaternion.identity);
+        Player.Instance.gameObject.SetActive(false);
+    }
+
+    private void ReloadScene()
+    {
+        Destroy(gameObject);
+        SceneManager.LoadScene(SCENE_TEXT);
+    }
 
     //public void TakeDamage(int damageAmount, Transform damageSource)
     //{
@@ -97,18 +169,18 @@ public class Health : MonoBehaviour
     //    StartCoroutine(flash.FlashRoutine());
     //}
 
-    public void Heal(int healAmount)
-    {
-        for (int i = 0; i < healAmount; i++)
-        {
-            if (currentHealth >= maxHealth)
-            {
-                break;
-            }
+    //public void Heal(int healAmount)
+    //{
+    //    for (int i = 0; i < healAmount; i++)
+    //    {
+    //        if (currentHealth >= maxHealth)
+    //        {
+    //            break;
+    //        }
 
-            Hearts[currentHealth].GetComponent<Image>().sprite = fullHeart;
-            //Debug.Log("currentHealth = " + currentHealth);
-            currentHealth++;
-        }
-    }
+    //        Hearts[currentHealth].GetComponent<Image>().sprite = fullHeart;
+    //        //Debug.Log("currentHealth = " + currentHealth);
+    //        currentHealth++;
+    //    }
+    //}
 }

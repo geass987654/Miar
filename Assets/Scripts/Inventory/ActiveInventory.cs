@@ -1,8 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
-public class ActiveInventory : MonoBehaviour
+public class ActiveInventory : Singleton<ActiveInventory>
 {
     private int activeSlotIndex = 0;
 
@@ -10,8 +11,10 @@ public class ActiveInventory : MonoBehaviour
 
     private CooldownTimer[] weaponTimers;
 
-    private void Awake()
+    protected override void Awake()
     {
+        base.Awake();
+
         playerControls = new PlayerControls();
 
         weaponTimers = new CooldownTimer[3];
@@ -25,8 +28,6 @@ public class ActiveInventory : MonoBehaviour
         {
             weaponTimers[i] = transform.GetChild(i).GetComponent<CooldownTimer>();
         }
-
-        ToggleActiveHighlight(0);
     }
 
     private void OnEnable()
@@ -34,13 +35,33 @@ public class ActiveInventory : MonoBehaviour
         playerControls.Enable();
     }
 
+    private void OnDisable()
+    {
+        playerControls.Disable();
+    }
+
+    public void EquipStartingWeapon()
+    {
+        ToggleActiveHighlight(0);
+    }
+
     private void ToggleActiveSlot(int numValue)
     {
+        if (Health.Instance.IsDead)
+        {
+            return;
+        }
+
         ToggleActiveHighlight(numValue - 1);
     }
 
     private void ToggleActiveHighlight(int indexNum)
     {
+        if (Health.Instance.IsDead)
+        {
+            return;
+        }
+
         activeSlotIndex = indexNum;
 
         foreach(Transform inventorySlot in this.transform)

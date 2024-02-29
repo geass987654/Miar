@@ -6,9 +6,8 @@ public class UseItem : MonoBehaviour
 {
     private PlayerControls playerControls;
     private CooldownTimer[] itemTimers;
-    private Health health;
     private Timer timer;
-    private readonly int healthAmount = 2;
+    private readonly int healingAmount = 2;
     private readonly float healCD = 5f;
     private readonly float addTimeCD = 30f;
     private bool isHealing = false, isAddingTime = false;
@@ -17,8 +16,6 @@ public class UseItem : MonoBehaviour
     {
         playerControls = new PlayerControls();
         itemTimers = new CooldownTimer[2];
-
-        health = GameObject.Find("USBman").GetComponent<Health>();
         timer = GameObject.Find("Timer").GetComponent<Timer>();
     }
 
@@ -42,12 +39,17 @@ public class UseItem : MonoBehaviour
 
     private void Use(int numValue)
     {
+        if (Health.Instance.IsDead)
+        {
+            return;
+        }
+
         int itemIndex = numValue - 4;
 
         if (itemIndex < 1 && !isHealing)
         {
             isHealing = true;
-            health.Heal(healthAmount);
+            Health.Instance.Heal(healingAmount);
             Debug.Log("¦^´_2ÂI¦å¶q");
             itemTimers[0].StartCoolDown(SetIsHealing);
         }

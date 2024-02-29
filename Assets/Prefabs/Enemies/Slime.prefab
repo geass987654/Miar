@@ -17,7 +17,7 @@ GameObject:
   - component: {fileID: 5433983263158940885}
   - component: {fileID: 1508090985150118200}
   - component: {fileID: 4473034651173787155}
-  - component: {fileID: 4377398746942258203}
+  - component: {fileID: 7608544993923849585}
   m_Layer: 0
   m_Name: Slime
   m_TagString: Enemy
@@ -167,10 +167,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   changeRoamingDircTime: 2
-  attackRange: 12
-  enemyType: {fileID: 4377398746942258203}
+  attackRange: 0
+  chaseRange: 12
+  enemyType: {fileID: 0}
   attackCooldown: 2
-  stopMovingWhileAttacking: 1
+  stopMovingWhileAttacking: 0
 --- !u!114 &2785310363093729778
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -196,6 +197,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 39021c34ae2f8b94abbc49bc47155b2e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  maxHealth: 3
   knockBackThrust: 10
   deathVFXPrefab: {fileID: 2040368147756419479, guid: 3e61c28ae0d9cc646a2c564e3066a442, type: 3}
 --- !u!114 &1508090985150118200
@@ -225,7 +227,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   whiteFlashMat: {fileID: 2100000, guid: e0101d9c61c110747bcf4ea40c94abb9, type: 2}
   restoreDefaultMatTime: 0.1
---- !u!114 &4377398746942258203
+--- !u!114 &7608544993923849585
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -234,16 +236,8 @@ MonoBehaviour:
   m_GameObject: {fileID: 1592527378349571245}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6ad4fb5970b812b499df2aaf3a3bc613, type: 3}
+  m_Script: {fileID: 11500000, guid: 256fd996e37ba20448186033b5c7ffdf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  bulletPrefab: {fileID: 4599377247967594856, guid: 454905c6d42792a40a213640883cc04a, type: 3}
-  bulletMoveSpeed: 5
-  burstCount: 3
-  projectilePerBurst: 8
-  angleSpread: 120
-  startingDistance: 0.2
-  timeBetweenBursts: 1
-  restTime: 0.5
-  stagger: 0
-  oscillate: 0
+  goldCoinPrefab: {fileID: 6838278150530866071, guid: 09b69c5057321ef4ab05200407d50a4f, type: 3}
+  healthGlobePrefab: {fileID: 6838278150530866071, guid: eda0ff3beafb11841a546356f89832df, type: 3}

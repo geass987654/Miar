@@ -138,8 +138,13 @@ GameObject:
   m_Component:
   - component: {fileID: 3824636375793198015}
   - component: {fileID: 3517034200850716186}
+  - component: {fileID: 8634127711224683379}
   - component: {fileID: 1434327575481175244}
   - component: {fileID: 7187085605458651388}
+  - component: {fileID: 5194049548854457658}
+  - component: {fileID: 6880454888607386778}
+  - component: {fileID: 6098327284180831900}
+  - component: {fileID: 8367838210131211590}
   m_Layer: 0
   m_Name: Cactus
   m_TagString: Enemy
@@ -215,6 +220,33 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!50 &8634127711224683379
+Rigidbody2D:
+  serializedVersion: 4
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7619746445215921899}
+  m_BodyType: 0
+  m_Simulated: 1
+  m_UseFullKinematicContacts: 0
+  m_UseAutoMass: 0
+  m_Mass: 1
+  m_LinearDrag: 0
+  m_AngularDrag: 0.05
+  m_GravityScale: 0
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_Interpolate: 0
+  m_SleepingMode: 1
+  m_CollisionDetection: 0
+  m_Constraints: 7
 --- !u!60 &1434327575481175244
 PolygonCollider2D:
   m_ObjectHideFlags: 0
@@ -290,3 +322,59 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   audioSource_1: {fileID: 2405664314930124052}
+--- !u!114 &5194049548854457658
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7619746445215921899}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 39021c34ae2f8b94abbc49bc47155b2e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  maxHealth: 5
+  knockBackThrust: 10
+  deathVFXPrefab: {fileID: 2040368147756419479, guid: 3e61c28ae0d9cc646a2c564e3066a442, type: 3}
+--- !u!114 &6880454888607386778
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7619746445215921899}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e106a1b12816b08428ab5452547abd2e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  knockBackTime: 0.2
+--- !u!114 &6098327284180831900
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7619746445215921899}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ea460050ae2661247ba3c4466c4cc543, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  whiteFlashMat: {fileID: 2100000, guid: e0101d9c61c110747bcf4ea40c94abb9, type: 2}
+  restoreDefaultMatTime: 0.2
+--- !u!114 &8367838210131211590
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7619746445215921899}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 256fd996e37ba20448186033b5c7ffdf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  goldCoinPrefab: {fileID: 6838278150530866071, guid: 09b69c5057321ef4ab05200407d50a4f, type: 3}
+  healthGlobePrefab: {fileID: 6838278150530866071, guid: eda0ff3beafb11841a546356f89832df, type: 3}

@@ -7,11 +7,13 @@ public class EnemyAI : MonoBehaviour
     private enum State
     {
         Roaming,
+        Chasing,
         Attacking
     }
 
     [SerializeField] private float changeRoamingDircTime = 2f;
     [SerializeField] private float attackRange = 0f;
+    [SerializeField] private float chaseRange= 12f;
     [SerializeField] private MonoBehaviour enemyType;
     [SerializeField] private float attackCooldown = 2f;
     [SerializeField] private bool stopMovingWhileAttacking = false;
@@ -19,6 +21,7 @@ public class EnemyAI : MonoBehaviour
     private State state;
     private EnemyPathFinding enemyPathFinding;
     private Vector2 roamPosition;
+    private Vector2 chasePosition;
     private float elapsedTime = 0f;
     private bool canAttack = true;
 
@@ -50,6 +53,10 @@ public class EnemyAI : MonoBehaviour
                 Attacking();
                 break;
 
+            case State.Chasing:
+                Chasing();
+                break;
+
             default:
                 break;
         }
@@ -61,7 +68,12 @@ public class EnemyAI : MonoBehaviour
 
         enemyPathFinding.MoveTo(roamPosition);
 
-        if(Vector2.Distance(transform.position, Player.Instance.transform.position) < attackRange)
+        if (Vector2.Distance(transform.position, Player.Instance.transform.position) < chaseRange)
+        {
+            state = State.Chasing;
+        }
+
+        if (Vector2.Distance(transform.position, Player.Instance.transform.position) < attackRange)
         {
             state = State.Attacking;
         }
@@ -70,6 +82,22 @@ public class EnemyAI : MonoBehaviour
         {
             roamPosition = GetRoamingPosition();
         }
+    }
+
+    private void Chasing()
+    {
+        chasePosition = GetChasingPosition();
+        enemyPathFinding.MoveTo(chasePosition);
+
+        if (Health.Instance.IsDead || Vector2.Distance(transform.position, Player.Instance.transform.position) > chaseRange)
+        {
+            state = State.Roaming;
+        }
+
+        //if (elapsedTime > changeChasingDircTime)
+        //{
+        //    roamPosition = GetChasingPosition();
+        //}
     }
 
     private void Attacking()
@@ -104,21 +132,16 @@ public class EnemyAI : MonoBehaviour
         canAttack = true;
     }
 
-    //private IEnumerator RoamingRoutine()
-    //{
-    //    while (state == State.Roaming)
-    //    {
-    //        Vector2 roamingPos = GetRoamingPosition();
-
-    //        enemyPathFinding.MoveTo(roamingPos);
-
-    //        yield return new WaitForSeconds(1f);
-    //    }
-    //}
-
     private Vector2 GetRoamingPosition()
     {
         elapsedTime = 0f;
         return new Vector2(Random.Range(-1, 1), Random.Range(-1, 1)).normalized;
+    }
+
+    private Vector2 GetChasingPosition()
+    {
+        elapsedTime = 0f;
+        Vector2 direction = Player.Instance.transform.position - transform.position;
+        return direction.normalized;
     }
 }

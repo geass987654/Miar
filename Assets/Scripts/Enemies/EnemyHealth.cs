@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class EnemyHealth : MonoBehaviour
 {
-    private const int maxHealth = 3;
+    [SerializeField] private int maxHealth = 3;
     private int currentHealth;
 
     private KnockBack knockBack;
@@ -45,6 +45,8 @@ public class EnemyHealth : MonoBehaviour
         if(currentHealth <= 0)
         {
             Instantiate(deathVFXPrefab, transform.position, Quaternion.identity);
+
+            GetComponent<PickUpSpawners>().DropItems();
 
             Destroy(gameObject);
         }
