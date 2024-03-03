@@ -211,6 +211,34 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
                     ""isPartOfComposite"": false
                 }
             ]
+        },
+        {
+            ""name"": ""Bag"",
+            ""id"": ""c0e0389f-41bf-4b73-9822-ca7d320fa389"",
+            ""actions"": [
+                {
+                    ""name"": ""Open"",
+                    ""type"": ""Button"",
+                    ""id"": ""4008217f-11fc-432a-b263-4115a337ffc7"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                }
+            ],
+            ""bindings"": [
+                {
+                    ""name"": """",
+                    ""id"": ""fa970f40-9410-4d59-a639-0363a85f790a"",
+                    ""path"": ""<Keyboard>/b"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Open"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                }
+            ]
         }
     ],
     ""controlSchemes"": []
@@ -227,6 +255,9 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
         // Item
         m_Item = asset.FindActionMap("Item", throwIfNotFound: true);
         m_Item_Use = m_Item.FindAction("Use", throwIfNotFound: true);
+        // Bag
+        m_Bag = asset.FindActionMap("Bag", throwIfNotFound: true);
+        m_Bag_Open = m_Bag.FindAction("Open", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -468,6 +499,52 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
         }
     }
     public ItemActions @Item => new ItemActions(this);
+
+    // Bag
+    private readonly InputActionMap m_Bag;
+    private List<IBagActions> m_BagActionsCallbackInterfaces = new List<IBagActions>();
+    private readonly InputAction m_Bag_Open;
+    public struct BagActions
+    {
+        private @PlayerControls m_Wrapper;
+        public BagActions(@PlayerControls wrapper) { m_Wrapper = wrapper; }
+        public InputAction @Open => m_Wrapper.m_Bag_Open;
+        public InputActionMap Get() { return m_Wrapper.m_Bag; }
+        public void Enable() { Get().Enable(); }
+        public void Disable() { Get().Disable(); }
+        public bool enabled => Get().enabled;
+        public static implicit operator InputActionMap(BagActions set) { return set.Get(); }
+        public void AddCallbacks(IBagActions instance)
+        {
+            if (instance == null || m_Wrapper.m_BagActionsCallbackInterfaces.Contains(instance)) return;
+            m_Wrapper.m_BagActionsCallbackInterfaces.Add(instance);
+            @Open.started += instance.OnOpen;
+            @Open.performed += instance.OnOpen;
+            @Open.canceled += instance.OnOpen;
+        }
+
+        private void UnregisterCallbacks(IBagActions instance)
+        {
+            @Open.started -= instance.OnOpen;
+            @Open.performed -= instance.OnOpen;
+            @Open.canceled -= instance.OnOpen;
+        }
+
+        public void RemoveCallbacks(IBagActions instance)
+        {
+            if (m_Wrapper.m_BagActionsCallbackInterfaces.Remove(instance))
+                UnregisterCallbacks(instance);
+        }
+
+        public void SetCallbacks(IBagActions instance)
+        {
+            foreach (var item in m_Wrapper.m_BagActionsCallbackInterfaces)
+                UnregisterCallbacks(item);
+            m_Wrapper.m_BagActionsCallbackInterfaces.Clear();
+            AddCallbacks(instance);
+        }
+    }
+    public BagActions @Bag => new BagActions(this);
     public interface IMovementActions
     {
         void OnMove(InputAction.CallbackContext context);
@@ -483,5 +560,9 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
     public interface IItemActions
     {
         void OnUse(InputAction.CallbackContext context);
+    }
+    public interface IBagActions
+    {
+        void OnOpen(InputAction.CallbackContext context);
     }
 }

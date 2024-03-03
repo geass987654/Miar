@@ -13,18 +13,17 @@ public class Player : Singleton<Player>
 
     private KnockBack knockBack;
 
-    public GameObject playerBag;                //顯示的背包UI
+    [SerializeField] private GameObject playerBag;                //顯示的背包UI
+    [SerializeField] private Transform weaponCollider;
 
     private bool isBagOpen = false;
     public bool isFreezed = false;
-
-    [SerializeField] private Transform weaponCollider;
 
     protected override void Awake()
     {
         base.Awake();
 
-        playerControls = new PlayerControls();
+        playerControls = new PlayerControls(); //初始化playerControls
         rb = GetComponent<Rigidbody2D>();
         animator = GetComponent<Animator>();
         knockBack = GetComponent<KnockBack>();
@@ -32,29 +31,24 @@ public class Player : Singleton<Player>
 
     private void Start()
     {
+        playerControls.Movement.Move.performed += value => ReadPlayerInput(value.ReadValue<Vector2>()); //當輸入值變動時，讀取並指派給direction
+        playerControls.Movement.Move.canceled += _ => direction = Vector2.zero; //鬆開按鍵時把direction設為零向量
+
+        playerControls.Movement.Move.performed += _ => SwitchAnim();
+
+        playerControls.Bag.Open.started += _ => OpenBag(); //在不傳遞參數的情況下，按下按鍵時呼叫OpenBag()
+
         ActiveInventory.Instance.EquipStartingWeapon();
     }
 
     private void OnEnable()
     {
-        playerControls.Enable();
+        playerControls.Enable(); //啟用playerControls
     }
 
     private void OnDisable()
     {
-        playerControls.Disable();
-    }
-
-    private void Update()
-    {
-        if (isFreezed)
-        {
-            return;
-        }
-
-        PlayerInput();
-        SwitchAnim();
-        OpenBag();
+        playerControls.Disable(); //停用playerControls
     }
 
     private void FixedUpdate()
@@ -62,13 +56,23 @@ public class Player : Singleton<Player>
         Move();
     }
 
-    private void PlayerInput()
+    private void ReadPlayerInput(Vector2 direction)
     {
-        direction = playerControls.Movement.Move.ReadValue<Vector2>().normalized;
+        if (isFreezed)
+        {
+            return;
+        }
+
+        this.direction = direction;
     }
 
     private void SwitchAnim()
     {
+        if (isFreezed)
+        {
+            return;
+        }
+
         if (direction != Vector2.zero)
         {
             animator.SetFloat("horizontal", direction.x);
@@ -88,31 +92,13 @@ public class Player : Singleton<Player>
         rb.MovePosition(rb.position + direction * (moveSpeed * Time.fixedDeltaTime));
     }
 
-    //private void AdjustFacingDirection()
-    //{
-    //    Vector3 mousePos = Input.mousePosition;
-    //    Vector3 playerScreenPoint = Camera.main.WorldToScreenPoint(transform.position);
-
-    //    if(mousePos.x < playerScreenPoint.x)
-    //    {
-    //        spriteRenderer.flipX = true;
-    //    }
-    //    else
-    //    {
-    //        spriteRenderer.flipX= false;
-    //    }
-    //}
-
-    private void OpenBag()
+    public void OpenBag()   //此函式在按下關閉背包按鈕時也必須呼叫，因此宣告為public
     {
-        if (Input.GetKeyDown(KeyCode.B))
-        {
-            //當背包被打叉關掉，isBagOpen = false，簡化為以下程式碼
-            isBagOpen = playerBag.activeSelf;
+        isBagOpen = !isBagOpen; //按下按鍵開啟背包；再次按下按鍵關閉背包
+        playerBag.SetActive(isBagOpen);
 
-            isBagOpen = !isBagOpen;
-            playerBag.SetActive(isBagOpen);
-        }
+        ActiveWeapon.Instance.canAttack = !playerBag.activeSelf; //開啟背包時無法攻擊
+
     }
 
     public void SetDirection(Vector2 vector2)

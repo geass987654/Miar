@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.UI;
 
 public class ItemOnDrag : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler
 {
@@ -14,13 +15,13 @@ public class ItemOnDrag : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDr
     //當用游標拖曳方格中的道具時，可將其移動到其他空的方格，若其他方格已有道具，則兩者互換；
 
     /*
-        Item有一個元件Canvas Group，關閉裡面的Blocks Raycasts，會發出一道射線，從游標射往螢幕的方向，
+        Item有一個元件Canvas Group，裡面的Blocks Raycasts，會發出一道射線，從游標射往螢幕的方向，
         並可用 pointerCurrentRaycast，回傳碰到的第一個 UI，若非UI則回傳null；而eventData在這邊代表滑鼠游標
     */
 
     private void Awake()
     {
-        topUI = GameObject.Find("Canvas").transform;
+        topUI = GameObject.Find("Canvas_Bag").transform;
     }
 
     public void OnBeginDrag(PointerEventData eventData)
@@ -30,7 +31,7 @@ public class ItemOnDrag : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDr
         //transform.SetParent(transform.parent.parent);   //開始拖曳時的Item設為Grid的子物件
         transform.SetParent(topUI);   //開始拖曳時的Item設為Grid的子物件
         transform.position = eventData.position;        //開始拖曳時的Item位置設為游標位置
-        GetComponent<CanvasGroup>().blocksRaycasts = false; //關閉blocksRaycasts功能，開啟射線，避免被拖曳中的UI阻擋
+        GetComponent<CanvasGroup>().blocksRaycasts = false; //關閉blocksRaycasts功能，避免被拖曳中的UI阻擋
     }
 
     public void OnDrag(PointerEventData eventData)
@@ -54,42 +55,44 @@ public class ItemOnDrag : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDr
 
     public void OnEndDrag(PointerEventData eventData)
     {
+        GameObject item = eventData.pointerCurrentRaycast.gameObject;
+
         //偵測到UI物件，亦即回傳值不為null
-        if (eventData.pointerCurrentRaycast.gameObject != null)
+        if (item != null)
         {
             //偵測到底下是另一個道具
-            if(eventData.pointerCurrentRaycast.gameObject.name == "Item Image")
+            if(item.name == "Item Image")
             {
                 //設定道具的父物件為方格(Slot)，位置為方格的位置
-                transform.SetParent(eventData.pointerCurrentRaycast.gameObject.transform.parent.parent);
-                transform.position = eventData.pointerCurrentRaycast.gameObject.transform.parent.parent.position;
+                transform.SetParent(item.transform.parent.parent);
+                transform.position = item.transform.parent.parent.position;
 
                 //互換記錄用背包(playerBag)的道具資訊，利用slotIndex = itemList的元素編號
                 //1.當前正在拖曳的道具   2.想拖曳過去的方格內的道具，將兩者互換
                 var temp = playerBag.itemList[currentItemIndex];
-                playerBag.itemList[currentItemIndex] = playerBag.itemList[eventData.pointerCurrentRaycast.gameObject.GetComponentInParent<Slot>().slotIndex];
-                playerBag.itemList[eventData.pointerCurrentRaycast.gameObject.GetComponentInParent<Slot>().slotIndex] = temp;
+                playerBag.itemList[currentItemIndex] = playerBag.itemList[item.GetComponentInParent<Slot>().slotIndex];
+                playerBag.itemList[item.GetComponentInParent<Slot>().slotIndex] = temp;
 
                 //設定底下的道具的父物件為原本的方格(Slot)，位置為原本方格的位置
-                eventData.pointerCurrentRaycast.gameObject.transform.parent.SetParent(originalParent);
-                eventData.pointerCurrentRaycast.gameObject.transform.parent.position = originalParent.position;
+                item.transform.parent.SetParent(originalParent);
+                item.transform.parent.position = originalParent.position;
 
                 GetComponent<CanvasGroup>().blocksRaycasts = true;
                 return;
             }
 
             //偵測到底下是空的方格
-            if (eventData.pointerCurrentRaycast.gameObject.name == "Slot(Clone)")
+            if (item.name == "Slot(Clone)")
             {
                 //設定道具的父物件為空的方格(Slot)，位置為空的方格的位置
-                transform.SetParent(eventData.pointerCurrentRaycast.gameObject.transform);
-                transform.position = eventData.pointerCurrentRaycast.gameObject.transform.position;
+                transform.SetParent(item.transform);
+                transform.position = item.transform.position;
 
                 //在itemList新增這項道具，元素編號 = 該道具所處方格的編號
-                playerBag.itemList[eventData.pointerCurrentRaycast.gameObject.GetComponent<Slot>().slotIndex] = playerBag.itemList[currentItemIndex];
+                playerBag.itemList[item.GetComponent<Slot>().slotIndex] = playerBag.itemList[currentItemIndex];
 
                 //若道具拖曳後再放回原先的方格，會導致道具消失，因此只有當方格不同時，才執行以下程式碼
-                if (eventData.pointerCurrentRaycast.gameObject.GetComponent<Slot>().slotIndex != currentItemIndex)
+                if (item.GetComponent<Slot>().slotIndex != currentItemIndex)
                 {
                     playerBag.itemList[currentItemIndex] = null;
                 }
@@ -97,6 +100,18 @@ public class ItemOnDrag : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDr
                 GetComponent<CanvasGroup>().blocksRaycasts = true;
                 return;
             }
+
+            //if(item.name == "Cooldown")
+            //{
+            //    Debug.Log("success");
+
+            //    item.transform.parent.GetChild(1).GetComponent<Image>().sprite = transform.GetChild(0).GetComponent<Image>().sprite;
+
+            //    playerBag.itemList[currentItemIndex] = null;
+
+            //    GetComponent<CanvasGroup>().blocksRaycasts = true;
+            //    return;
+            //}
         }
 
         //其他情況，則將道具回歸到原本的位置

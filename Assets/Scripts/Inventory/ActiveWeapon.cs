@@ -9,6 +9,7 @@ public class ActiveWeapon : Singleton<ActiveWeapon>
     private float timeBetweenAttacks;
     private bool attackBtnDown, isAttacking = false;
 
+    public bool canAttack = true;
     public MonoBehaviour CurrentActiveWeapon { get; private set; }
 
     private CooldownTimer currentCooldownTimer;
@@ -66,7 +67,7 @@ public class ActiveWeapon : Singleton<ActiveWeapon>
 
     private void Attack()
     {
-        if (attackBtnDown && !isAttacking && CurrentActiveWeapon)
+        if (attackBtnDown && !isAttacking && CurrentActiveWeapon && canAttack)
         {
             AttackCooldown();
 

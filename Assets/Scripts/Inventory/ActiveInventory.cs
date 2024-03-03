@@ -18,16 +18,16 @@ public class ActiveInventory : Singleton<ActiveInventory>
         playerControls = new PlayerControls();
 
         weaponTimers = new CooldownTimer[3];
-    }
-
-    private void Start()
-    {
-        playerControls.Inventory.KeyBoard.performed += context => ToggleActiveSlot((int)context.ReadValue<float>());
 
         for (int i = 0; i < weaponTimers.Length; i++)
         {
             weaponTimers[i] = transform.GetChild(i).GetComponent<CooldownTimer>();
         }
+    }
+
+    private void Start()
+    {
+        playerControls.Inventory.KeyBoard.performed += context => ToggleActiveSlot((int)context.ReadValue<float>());
     }
 
     private void OnEnable()

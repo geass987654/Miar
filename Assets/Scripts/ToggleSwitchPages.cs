@@ -8,6 +8,7 @@ public class ToggleSwitchPages : MonoBehaviour
 {
     [SerializeField] private Toggle toggleEquipment, toggleEssential, toggleChip;
     [SerializeField] private GameObject equipment, essential, chip;
+    [SerializeField] private GameObject equipBtn;
 
     private void Awake()
     {
@@ -21,11 +22,13 @@ public class ToggleSwitchPages : MonoBehaviour
         equipment.gameObject.SetActive(false);
         essential.gameObject.SetActive(false);
         chip.gameObject.SetActive(false);
+        equipBtn.SetActive(false);
 
         switch (name)
         {
             case "equipment":
                 equipment.gameObject.SetActive(true);
+                equipBtn.SetActive(true);
                 break;
 
             case "essential":

@@ -54,5 +54,6 @@ public class Timer : MonoBehaviour
     public void MoreTime()
     {
         min += 2;
+        seconds += 120;
     }
 }

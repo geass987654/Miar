@@ -27,10 +27,6 @@ public class InventoryManager : MonoBehaviour
     public List<GameObject> essentialSlots = new List<GameObject>();   //儲存背包中的道具
     public List<GameObject> chipSlots = new List<GameObject>();        //儲存背包中的道具
 
-    public Inventory shortCutBarBag;
-    public GameObject shortCutBar;
-    public List<GameObject> shortCutBarSlots = new List<GameObject>();
-
     //static InventoryManager instance;
     //public Inventory[] playerBag = new Inventory[3];             //紀錄背包中的道具
     //public GameObject[] slotGrid = new GameObject[3];            //方格排列
@@ -98,7 +94,6 @@ public class InventoryManager : MonoBehaviour
         RefreshItemOnEquipment();
         RefreshItemOnEssential();
         RefreshItemOnChip();
-        RefreshItemOnShortCurBar();
     }
 
     public static void RefreshItemOnEquipment()
@@ -172,32 +167,6 @@ public class InventoryManager : MonoBehaviour
             instance.chipSlots[i].GetComponent<Slot>().slotIndex = i;
             instance.chipSlots[i].GetComponent<Slot>().SetupSlot(instance.chipBag.itemList[i]);
             instance.chip.transform.GetChild(i).transform.GetChild(0).GetComponent<ItemOnDrag>().playerBag = instance.chipBag;
-        }
-    }
-    public static void RefreshItemOnShortCurBar()
-    {
-        Debug.Log("ShortCutBar start");
-        for (int i = 0; i < instance.shortCutBar.transform.childCount; i++)
-        {
-            if (instance.shortCutBar.transform.childCount == 0)
-            {
-                break;
-            }
-            Destroy(instance.shortCutBar.transform.GetChild(i).gameObject);
-            Debug.Log("ShortCutBar destroy" + i);
-            instance.shortCutBarSlots.Clear();
-        }
-
-        for (int i = 0; i < instance.shortCutBarBag.itemList.Count; i++)
-        {
-            //CreateNewItem(instance.playerBag.itemList[i]);
-            instance.shortCutBarSlots.Add(Instantiate(instance.emptySlot));
-            instance.shortCutBarSlots[i].transform.SetParent(instance.shortCutBar.transform);
-            instance.shortCutBarSlots[i].GetComponent<Slot>().slotIndex = i;
-            instance.shortCutBarSlots[i].GetComponent<Slot>().SetupSlot(instance.shortCutBarBag.itemList[i]);
-            Debug.Log("ShortCutBar instantiate" + i);
-
-            instance.shortCutBar.transform.GetChild(i).transform.GetChild(0).GetComponent<ItemOnDrag>().playerBag = instance.shortCutBarBag;
         }
     }
 
