@@ -38,7 +38,7 @@ public class Player : Singleton<Player>
 
         playerControls.Bag.Open.started += _ => OpenBag(); //在不傳遞參數的情況下，按下按鍵時呼叫OpenBag()
 
-        ActiveInventory.Instance.EquipStartingWeapon();
+        //ActiveInventory.Instance.EquipStartingWeapon();
     }
 
     private void OnEnable()

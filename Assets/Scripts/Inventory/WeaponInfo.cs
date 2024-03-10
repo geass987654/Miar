@@ -10,4 +10,9 @@ public class WeaponInfo : ScriptableObject
     public float weaponCooldown;
     public int weaponDamage;
     public float weaponRange;
+
+    //public string weaponName;
+    //public Sprite weaponImage;
+    //[TextArea]
+    //public string weaponInfo;
 }

@@ -7,4 +7,5 @@ using UnityEngine;
 public class Inventory : ScriptableObject
 {
     public List<Item> itemList = new List<Item>();
+    //public List<WeaponInfo> weaponInfoList = new List<WeaponInfo>();
 }

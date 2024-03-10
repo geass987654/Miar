@@ -25,7 +25,7 @@ public class UseItem : MonoBehaviour
 
         for(int i = 0; i < itemTimers.Length; i++)
         {
-            itemTimers[i] = transform.GetChild(i + 3).GetComponent<CooldownTimer>();
+            itemTimers[i] = transform.GetChild(i + 2).GetComponent<CooldownTimer>();
         }
 
         itemTimers[0].SetCooldownTime(healCD);

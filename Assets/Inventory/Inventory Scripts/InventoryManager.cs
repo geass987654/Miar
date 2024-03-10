@@ -19,13 +19,18 @@ public class InventoryManager : MonoBehaviour
     //public List<GameObject> slots = new List<GameObject>(); //儲存背包中的道具
 
     static InventoryManager instance;
-    public Inventory equipmentBag, essentialBag, chipBag;              //紀錄背包中的道具
-    public GameObject equipment, essential, chip;                      //方格排列
+    //public Inventory equipmentBag, essentialBag, chipBag;              //紀錄背包中的道具
+    public Inventory playerBag;
+    public GameObject slotGrid;
+    //public GameObject equipment, essential, chip;                      //方格排列
     public GameObject emptySlot;                                       //空的方格
     public Text itemInfo;                                              //道具資訊
-    public List<GameObject> equipmentSlots = new List<GameObject>();   //儲存背包中的道具
-    public List<GameObject> essentialSlots = new List<GameObject>();   //儲存背包中的道具
-    public List<GameObject> chipSlots = new List<GameObject>();        //儲存背包中的道具
+    public List<GameObject> slots = new List<GameObject>();
+    public int currentItemIndex;
+    public GameObject equipButton;
+    //public List<GameObject> equipmentSlots = new List<GameObject>();   //儲存背包中的道具
+    //public List<GameObject> essentialSlots = new List<GameObject>();   //儲存背包中的道具
+    //public List<GameObject> chipSlots = new List<GameObject>();        //儲存背包中的道具
 
     //static InventoryManager instance;
     //public Inventory[] playerBag = new Inventory[3];             //紀錄背包中的道具
@@ -91,82 +96,34 @@ public class InventoryManager : MonoBehaviour
 
     public static void RefreshItem()
     {
-        RefreshItemOnEquipment();
-        RefreshItemOnEssential();
-        RefreshItemOnChip();
-    }
+        //RefreshItemOnEquipment();
+        //RefreshItemOnEssential();
+        //RefreshItemOnChip();
 
-    public static void RefreshItemOnEquipment()
-    {
-        //Debug.Log("equipment start");
-        for (int i = 0; i < instance.equipment.transform.childCount; i++)
+        for (int i = 0; i < instance.slotGrid.transform.childCount; i++)
         {
-            if (instance.equipment.transform.childCount == 0)
+            if (instance.slotGrid.transform.childCount == 0)
             {
                 break;
             }
-            Destroy(instance.equipment.transform.GetChild(i).gameObject);
+            Destroy(instance.slotGrid.transform.GetChild(i).gameObject);
             //Debug.Log("equipment destroy" + i);
-            instance.equipmentSlots.Clear();
+            
         }
 
-        for (int i = 0; i < instance.equipmentBag.itemList.Count; i++)
+        instance.slots.Clear();
+
+        for (int i = 0; i < instance.playerBag.itemList.Count; i++)
         {
             //CreateNewItem(instance.playerBag.itemList[i]);
-            instance.equipmentSlots.Add(Instantiate(instance.emptySlot));
-            instance.equipmentSlots[i].transform.SetParent(instance.equipment.transform);
-            instance.equipmentSlots[i].GetComponent<Slot>().slotIndex = i;
-            instance.equipmentSlots[i].GetComponent<Slot>().SetupSlot(instance.equipmentBag.itemList[i]);
-            //Debug.Log("equipment instantiate" + i);
+            instance.slots.Add(Instantiate(instance.emptySlot));
+            instance.slots[i].transform.SetParent(instance.slotGrid.transform);
+            instance.slots[i].GetComponent<Slot>().slotIndex = i;
+            instance.slots[i].GetComponent<Slot>().SetUpSlot(instance.playerBag.itemList[i]);
+            //Debug.Log("item instantiate" + i);
 
-            instance.equipment.transform.GetChild(i).transform.GetChild(0).GetComponent<ItemOnDrag>().playerBag = instance.equipmentBag;
-        }
-    }
-    public static void RefreshItemOnEssential()
-    {
-        //Debug.Log("essential start");
-        for (int i = 0; i < instance.essential.transform.childCount; i++)
-        {
-            if (instance.essential.transform.childCount == 0)
-            {
-                break;
-            }
-            Destroy(instance.essential.transform.GetChild(i).gameObject);
-            //Debug.Log("essential destroy" + i);
-            instance.essentialSlots.Clear();
-        }
+            instance.slotGrid.transform.GetChild(i).transform.GetChild(0).GetComponent<ItemOnDrag>().playerBag = instance.playerBag;
 
-        for (int i = 0; i < instance.essentialBag.itemList.Count; i++)
-        {
-            //CreateNewItem(instance.playerBag.itemList[i]);
-            instance.essentialSlots.Add(Instantiate(instance.emptySlot));
-            instance.essentialSlots[i].transform.SetParent(instance.essential.transform);
-            instance.essentialSlots[i].GetComponent<Slot>().slotIndex = i;
-            instance.essentialSlots[i].GetComponent<Slot>().SetupSlot(instance.essentialBag.itemList[i]);
-            //Debug.Log("essential instantiate" + i);
-            instance.essential.transform.GetChild(i).transform.GetChild(0).GetComponent<ItemOnDrag>().playerBag = instance.essentialBag;
-        }
-    }
-    public static void RefreshItemOnChip()
-    {
-        for (int i = 0; i < instance.chip.transform.childCount; i++)
-        {
-            if (instance.chip.transform.childCount == 0)
-            {
-                break;
-            }
-            Destroy(instance.chip.transform.GetChild(i).gameObject);
-            instance.chipSlots.Clear();
-        }
-
-        for (int i = 0; i < instance.chipBag.itemList.Count; i++)
-        {
-            //CreateNewItem(instance.playerBag.itemList[i]);
-            instance.chipSlots.Add(Instantiate(instance.emptySlot));
-            instance.chipSlots[i].transform.SetParent(instance.chip.transform);
-            instance.chipSlots[i].GetComponent<Slot>().slotIndex = i;
-            instance.chipSlots[i].GetComponent<Slot>().SetupSlot(instance.chipBag.itemList[i]);
-            instance.chip.transform.GetChild(i).transform.GetChild(0).GetComponent<ItemOnDrag>().playerBag = instance.chipBag;
         }
     }
 
@@ -174,4 +131,99 @@ public class InventoryManager : MonoBehaviour
     {
         instance.itemInfo.text = itemDescription;
     }
+
+    public static void UpdateCurrentItemIndex(int slotIndex)
+    {
+        instance.currentItemIndex = slotIndex;
+    }
+
+    public static int GetCurrentItemIndex()
+    {
+        return instance.currentItemIndex;
+    }
+
+    public static void CleanItemInfo()
+    {
+        instance.itemInfo.text = "";
+
+    }
+
+    public static void SetEquipBtnState(bool state)
+    {
+        instance.equipButton.SetActive(state);
+    }
+
+    //public static void RefreshItemOnEquipment()
+    //{
+    //    //Debug.Log("equipment start");
+    //    for (int i = 0; i < instance.equipment.transform.childCount; i++)
+    //    {
+    //        if (instance.equipment.transform.childCount == 0)
+    //        {
+    //            break;
+    //        }
+    //        Destroy(instance.equipment.transform.GetChild(i).gameObject);
+    //        //Debug.Log("equipment destroy" + i);
+    //        instance.equipmentSlots.Clear();
+    //    }
+
+    //    for (int i = 0; i < instance.equipmentBag.itemList.Count; i++)
+    //    {
+    //        //CreateNewItem(instance.playerBag.itemList[i]);
+    //        instance.equipmentSlots.Add(Instantiate(instance.emptySlot));
+    //        instance.equipmentSlots[i].transform.SetParent(instance.equipment.transform);
+    //        instance.equipmentSlots[i].GetComponent<Slot>().slotIndex = i;
+    //        instance.equipmentSlots[i].GetComponent<Slot>().SetupSlot(instance.equipmentBag.itemList[i]);
+    //        //Debug.Log("equipment instantiate" + i);
+
+    //        instance.equipment.transform.GetChild(i).transform.GetChild(0).GetComponent<ItemOnDrag>().playerBag = instance.equipmentBag;
+    //    }
+    //}
+    //public static void RefreshItemOnEssential()
+    //{
+    //    //Debug.Log("essential start");
+    //    for (int i = 0; i < instance.essential.transform.childCount; i++)
+    //    {
+    //        if (instance.essential.transform.childCount == 0)
+    //        {
+    //            break;
+    //        }
+    //        Destroy(instance.essential.transform.GetChild(i).gameObject);
+    //        //Debug.Log("essential destroy" + i);
+    //        instance.essentialSlots.Clear();
+    //    }
+
+    //    for (int i = 0; i < instance.essentialBag.itemList.Count; i++)
+    //    {
+    //        //CreateNewItem(instance.playerBag.itemList[i]);
+    //        instance.essentialSlots.Add(Instantiate(instance.emptySlot));
+    //        instance.essentialSlots[i].transform.SetParent(instance.essential.transform);
+    //        instance.essentialSlots[i].GetComponent<Slot>().slotIndex = i;
+    //        instance.essentialSlots[i].GetComponent<Slot>().SetupSlot(instance.essentialBag.itemList[i]);
+    //        //Debug.Log("essential instantiate" + i);
+    //        instance.essential.transform.GetChild(i).transform.GetChild(0).GetComponent<ItemOnDrag>().playerBag = instance.essentialBag;
+    //    }
+    //}
+    //public static void RefreshItemOnChip()
+    //{
+    //    for (int i = 0; i < instance.chip.transform.childCount; i++)
+    //    {
+    //        if (instance.chip.transform.childCount == 0)
+    //        {
+    //            break;
+    //        }
+    //        Destroy(instance.chip.transform.GetChild(i).gameObject);
+    //        instance.chipSlots.Clear();
+    //    }
+
+    //    for (int i = 0; i < instance.chipBag.itemList.Count; i++)
+    //    {
+    //        //CreateNewItem(instance.playerBag.itemList[i]);
+    //        instance.chipSlots.Add(Instantiate(instance.emptySlot));
+    //        instance.chipSlots[i].transform.SetParent(instance.chip.transform);
+    //        instance.chipSlots[i].GetComponent<Slot>().slotIndex = i;
+    //        instance.chipSlots[i].GetComponent<Slot>().SetupSlot(instance.chipBag.itemList[i]);
+    //        instance.chip.transform.GetChild(i).transform.GetChild(0).GetComponent<ItemOnDrag>().playerBag = instance.chipBag;
+    //    }
+    //}
 }

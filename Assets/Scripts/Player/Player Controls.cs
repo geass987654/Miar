@@ -135,6 +135,15 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": true
+                },
+                {
+                    ""name"": ""Change"",
+                    ""type"": ""Button"",
+                    ""id"": ""39f730ee-5930-4691-9fea-90575e84e488"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -170,6 +179,17 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
                     ""action"": ""KeyBoard"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""c955e289-9852-4bc3-b748-734a6a29065b"",
+                    ""path"": ""<Keyboard>/q"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Change"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         },
@@ -185,6 +205,15 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": true
+                },
+                {
+                    ""name"": ""Use Item"",
+                    ""type"": ""Button"",
+                    ""id"": ""d8924534-e63a-4bd6-81d0-dbca999e5145"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -207,6 +236,17 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
                     ""processors"": ""Scale(factor=5)"",
                     ""groups"": """",
                     ""action"": ""Use"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""b8e5d347-afc7-4f5b-a8b8-5ffbd6229e4d"",
+                    ""path"": ""<Keyboard>/e"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Use Item"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -252,9 +292,11 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
         // Inventory
         m_Inventory = asset.FindActionMap("Inventory", throwIfNotFound: true);
         m_Inventory_KeyBoard = m_Inventory.FindAction("KeyBoard", throwIfNotFound: true);
+        m_Inventory_Change = m_Inventory.FindAction("Change", throwIfNotFound: true);
         // Item
         m_Item = asset.FindActionMap("Item", throwIfNotFound: true);
         m_Item_Use = m_Item.FindAction("Use", throwIfNotFound: true);
+        m_Item_UseItem = m_Item.FindAction("Use Item", throwIfNotFound: true);
         // Bag
         m_Bag = asset.FindActionMap("Bag", throwIfNotFound: true);
         m_Bag_Open = m_Bag.FindAction("Open", throwIfNotFound: true);
@@ -412,11 +454,13 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
     private readonly InputActionMap m_Inventory;
     private List<IInventoryActions> m_InventoryActionsCallbackInterfaces = new List<IInventoryActions>();
     private readonly InputAction m_Inventory_KeyBoard;
+    private readonly InputAction m_Inventory_Change;
     public struct InventoryActions
     {
         private @PlayerControls m_Wrapper;
         public InventoryActions(@PlayerControls wrapper) { m_Wrapper = wrapper; }
         public InputAction @KeyBoard => m_Wrapper.m_Inventory_KeyBoard;
+        public InputAction @Change => m_Wrapper.m_Inventory_Change;
         public InputActionMap Get() { return m_Wrapper.m_Inventory; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -429,6 +473,9 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
             @KeyBoard.started += instance.OnKeyBoard;
             @KeyBoard.performed += instance.OnKeyBoard;
             @KeyBoard.canceled += instance.OnKeyBoard;
+            @Change.started += instance.OnChange;
+            @Change.performed += instance.OnChange;
+            @Change.canceled += instance.OnChange;
         }
 
         private void UnregisterCallbacks(IInventoryActions instance)
@@ -436,6 +483,9 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
             @KeyBoard.started -= instance.OnKeyBoard;
             @KeyBoard.performed -= instance.OnKeyBoard;
             @KeyBoard.canceled -= instance.OnKeyBoard;
+            @Change.started -= instance.OnChange;
+            @Change.performed -= instance.OnChange;
+            @Change.canceled -= instance.OnChange;
         }
 
         public void RemoveCallbacks(IInventoryActions instance)
@@ -458,11 +508,13 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
     private readonly InputActionMap m_Item;
     private List<IItemActions> m_ItemActionsCallbackInterfaces = new List<IItemActions>();
     private readonly InputAction m_Item_Use;
+    private readonly InputAction m_Item_UseItem;
     public struct ItemActions
     {
         private @PlayerControls m_Wrapper;
         public ItemActions(@PlayerControls wrapper) { m_Wrapper = wrapper; }
         public InputAction @Use => m_Wrapper.m_Item_Use;
+        public InputAction @UseItem => m_Wrapper.m_Item_UseItem;
         public InputActionMap Get() { return m_Wrapper.m_Item; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -475,6 +527,9 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
             @Use.started += instance.OnUse;
             @Use.performed += instance.OnUse;
             @Use.canceled += instance.OnUse;
+            @UseItem.started += instance.OnUseItem;
+            @UseItem.performed += instance.OnUseItem;
+            @UseItem.canceled += instance.OnUseItem;
         }
 
         private void UnregisterCallbacks(IItemActions instance)
@@ -482,6 +537,9 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
             @Use.started -= instance.OnUse;
             @Use.performed -= instance.OnUse;
             @Use.canceled -= instance.OnUse;
+            @UseItem.started -= instance.OnUseItem;
+            @UseItem.performed -= instance.OnUseItem;
+            @UseItem.canceled -= instance.OnUseItem;
         }
 
         public void RemoveCallbacks(IItemActions instance)
@@ -556,10 +614,12 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
     public interface IInventoryActions
     {
         void OnKeyBoard(InputAction.CallbackContext context);
+        void OnChange(InputAction.CallbackContext context);
     }
     public interface IItemActions
     {
         void OnUse(InputAction.CallbackContext context);
+        void OnUseItem(InputAction.CallbackContext context);
     }
     public interface IBagActions
     {

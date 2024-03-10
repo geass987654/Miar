@@ -12,7 +12,7 @@ public class ActiveWeapon : Singleton<ActiveWeapon>
     public bool canAttack = true;
     public MonoBehaviour CurrentActiveWeapon { get; private set; }
 
-    private CooldownTimer currentCooldownTimer;
+    //private CooldownTimer currentCooldownTimer;
 
     protected override void Awake()
     {
@@ -55,14 +55,14 @@ public class ActiveWeapon : Singleton<ActiveWeapon>
 
         timeBetweenAttacks = (CurrentActiveWeapon as IWeapon).GetWeaponInfo().weaponCooldown;
 
-        currentCooldownTimer.SetCooldownTime(timeBetweenAttacks);
+        //currentCooldownTimer.SetCooldownTime(timeBetweenAttacks);
     }
 
     public void NullWeapon()
     {
         CurrentActiveWeapon = null;
 
-        currentCooldownTimer.SetCooldownTime(10f);
+        //currentCooldownTimer.SetCooldownTime(10f);
     }
 
     private void Attack()
@@ -86,15 +86,17 @@ public class ActiveWeapon : Singleton<ActiveWeapon>
 
     private IEnumerator TimeBetweenAttacksRoutine()
     {
-        currentCooldownTimer.StartCoolDown();
+        //currentCooldownTimer.StartCoolDown();
+
+        ActiveInventory.Instance.WeaponTimer.StartCoolDown();
 
         yield return new WaitForSeconds(timeBetweenAttacks);
 
         isAttacking = false;
     }
 
-    public void SetCooldownTimer(CooldownTimer cooldownTimer)
-    {
-        currentCooldownTimer = cooldownTimer;
-    }
+    //public void SetCooldownTimer(CooldownTimer cooldownTimer)
+    //{
+    //    currentCooldownTimer = cooldownTimer;
+    //}
 }

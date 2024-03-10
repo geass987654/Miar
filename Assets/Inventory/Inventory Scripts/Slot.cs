@@ -17,9 +17,11 @@ public class Slot : MonoBehaviour
     public void ItemOnClicked()
     {
         InventoryManager.UpdateItemInfo(slotInfo);
+        InventoryManager.UpdateCurrentItemIndex(slotIndex);
+        InventoryManager.SetEquipBtnState(true);
     }
 
-    public void SetupSlot(Item item)
+    public void SetUpSlot(Item item)
     {
         if (item == null)
         {

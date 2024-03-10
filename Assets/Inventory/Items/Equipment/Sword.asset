@@ -18,3 +18,4 @@ MonoBehaviour:
   itemAttribute: Equipment
   itemInfo: "\u9019\u662F\u4E00\u628A\u666E\u901A\u7684\u528D\u3002"
   equip: 1
+  weaponInfo: {fileID: 11400000, guid: 70d03386d824bba488819067366d19ee, type: 2}
