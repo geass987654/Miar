@@ -20,14 +20,15 @@ public class InventoryManager : MonoBehaviour
 
     static InventoryManager instance;
     //public Inventory equipmentBag, essentialBag, chipBag;              //紀錄背包中的道具
-    public Inventory playerBag;
-    public GameObject slotGrid;
-    //public GameObject equipment, essential, chip;                      //方格排列
-    public GameObject emptySlot;                                       //空的方格
+    public Inventory weapon, essential;
+    public GameObject weaponGrid, essentialGrid;
+    //public GameObject equipment, essential, chip;                    //方格排列
+    public GameObject weaponSlot, essentialSlot;                       //空的方格
     public Text itemInfo;                                              //道具資訊
-    public List<GameObject> slots = new List<GameObject>();
+    public List<GameObject> weaponSlots, essentialSlots;
     public int currentItemIndex;
-    public GameObject equipButton;
+    [SerializeField] private GameObject EquipButton;
+    [SerializeField] private GameObject UseButton;
     //public List<GameObject> equipmentSlots = new List<GameObject>();   //儲存背包中的道具
     //public List<GameObject> essentialSlots = new List<GameObject>();   //儲存背包中的道具
     //public List<GameObject> chipSlots = new List<GameObject>();        //儲存背包中的道具
@@ -54,9 +55,16 @@ public class InventoryManager : MonoBehaviour
         instance = this;
     }
 
+    private void Start()
+    {
+        instance.weaponSlots = new List<GameObject>();
+        instance.essentialSlots = new List<GameObject>();
+    }
+
     private void OnEnable()
     {
-        RefreshItem();
+        RefreshWeapons();
+        RefreshEssentials();
         instance.itemInfo.text = "";
     }
 
@@ -94,36 +102,47 @@ public class InventoryManager : MonoBehaviour
           最後傳送itemList的各項資料到slots各方格中。
     */
 
-    public static void RefreshItem()
+    public static void RefreshWeapons()
     {
-        //RefreshItemOnEquipment();
-        //RefreshItemOnEssential();
-        //RefreshItemOnChip();
-
-        for (int i = 0; i < instance.slotGrid.transform.childCount; i++)
+        for (int i = 0; i < instance.weaponGrid.transform.childCount; i++)
         {
-            if (instance.slotGrid.transform.childCount == 0)
+            if (instance.weaponGrid.transform.childCount == 0)
             {
                 break;
             }
-            Destroy(instance.slotGrid.transform.GetChild(i).gameObject);
-            //Debug.Log("equipment destroy" + i);
+            Destroy(instance.weaponGrid.transform.GetChild(i).gameObject);
             
+            instance.weaponSlots.Clear();
         }
 
-        instance.slots.Clear();
-
-        for (int i = 0; i < instance.playerBag.itemList.Count; i++)
+        for (int i = 0; i < instance.weapon.itemList.Count; i++)
         {
-            //CreateNewItem(instance.playerBag.itemList[i]);
-            instance.slots.Add(Instantiate(instance.emptySlot));
-            instance.slots[i].transform.SetParent(instance.slotGrid.transform);
-            instance.slots[i].GetComponent<Slot>().slotIndex = i;
-            instance.slots[i].GetComponent<Slot>().SetUpSlot(instance.playerBag.itemList[i]);
-            //Debug.Log("item instantiate" + i);
+            instance.weaponSlots.Add(Instantiate(instance.weaponSlot));
+            instance.weaponSlots[i].transform.SetParent(instance.weaponGrid.transform);
+            instance.weaponSlots[i].GetComponent<Slot>().slotIndex = i;
+            instance.weaponSlots[i].GetComponent<Slot>().SetUpSlot(instance.weapon.itemList[i]);
+        }
+    }
 
-            instance.slotGrid.transform.GetChild(i).transform.GetChild(0).GetComponent<ItemOnDrag>().playerBag = instance.playerBag;
+    public static void RefreshEssentials()
+    {
+        for (int i = 0; i < instance.essentialGrid.transform.childCount; i++)
+        {
+            if (instance.essentialGrid.transform.childCount == 0)
+            {
+                break;
+            }
+            Destroy(instance.essentialGrid.transform.GetChild(i).gameObject);
 
+            instance.essentialSlots.Clear();
+        }
+
+        for (int i = 0; i < instance.essential.itemList.Count; i++)
+        {
+            instance.essentialSlots.Add(Instantiate(instance.essentialSlot));
+            instance.essentialSlots[i].transform.SetParent(instance.essentialGrid.transform);
+            instance.essentialSlots[i].GetComponent<Slot>().slotIndex = i;
+            instance.essentialSlots[i].GetComponent<Slot>().SetUpSlot(instance.essential.itemList[i]);
         }
     }
 
@@ -145,12 +164,25 @@ public class InventoryManager : MonoBehaviour
     public static void CleanItemInfo()
     {
         instance.itemInfo.text = "";
-
     }
 
     public static void SetEquipBtnState(bool state)
     {
-        instance.equipButton.SetActive(state);
+        instance.EquipButton.SetActive(state);
+    }
+
+    public static void SetUseBtnState(bool state)
+    {
+        instance.UseButton.SetActive(state);
+    }
+
+    public static void SetEquipBtnComponent(bool state)
+    {
+        instance.EquipButton.GetComponent<Button>().enabled = state;
+    }
+    public static void SetUseBtnComponent(bool state)
+    {
+        instance.UseButton.GetComponent<Button>().enabled = state;
     }
 
     //public static void RefreshItemOnEquipment()

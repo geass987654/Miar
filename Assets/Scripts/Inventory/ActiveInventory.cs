@@ -8,9 +8,11 @@ public class ActiveInventory : Singleton<ActiveInventory>
     private readonly int weaponSlotIndex = 0;
     private PlayerControls playerControls;
     private WeaponInfo weaponInfo;
-
     public CooldownTimer WeaponTimer { get; private set; }
-    //private CooldownTimer[] weaponTimers;
+
+    private readonly int itemSlotIndex = 1;
+    private RedPotion redPotion;
+    private BluePotion bluePotion;
 
     protected override void Awake()
     {
@@ -19,13 +21,8 @@ public class ActiveInventory : Singleton<ActiveInventory>
         playerControls = new PlayerControls();
 
         WeaponTimer = transform.GetChild(weaponSlotIndex).GetComponent<CooldownTimer>();
-
-        //weaponTimers = new CooldownTimer[3];
-
-        //for (int i = 0; i < weaponTimers.Length; i++)
-        //{
-        //    weaponTimers[i] = transform.GetChild(i).GetComponent<CooldownTimer>();
-        //}
+        redPotion = transform.GetChild(itemSlotIndex).GetComponent<RedPotion>();
+        bluePotion = transform.GetChild(itemSlotIndex).GetComponent<BluePotion>();
     }
 
     private void Start()
@@ -78,6 +75,27 @@ public class ActiveInventory : Singleton<ActiveInventory>
         newWeapon.transform.SetParent(ActiveWeapon.Instance.transform);
 
         ActiveWeapon.Instance.NewWeapon(newWeapon.GetComponent<MonoBehaviour>());
+    }
+
+    public void ChangeItem(string itemName)
+    {
+        redPotion.enabled = false;
+        bluePotion.enabled = false;
+
+        switch (itemName)
+        {
+            case "Red Potion":
+                redPotion.enabled = true;
+                break;
+
+            case "Blue Potion":
+                bluePotion.enabled = true;
+                break;
+
+            default:
+                Debug.Log("Change Item Error");
+                break;
+        }
     }
 
     //private void ToggleActiveSlot(int numValue)

@@ -10,9 +10,10 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 21d7b346a15d79a42b6c53af0faaa8c0, type: 3}
-  m_Name: Equipment
+  m_Name: Weapon
   m_EditorClassIdentifier: 
   itemList:
+  - {fileID: 11400000, guid: 2f3d7e0d0def5674fbb19332697c089c, type: 2}
   - {fileID: 0}
   - {fileID: 0}
   - {fileID: 0}
@@ -21,5 +22,4 @@ MonoBehaviour:
   - {fileID: 0}
   - {fileID: 0}
   - {fileID: 0}
-  - {fileID: 11400000, guid: b5e10852d63181648b6365e6a6f0d341, type: 2}
-  - {fileID: 11400000, guid: 901500e943015e348a7c15397ffad526, type: 2}
+  - {fileID: 0}

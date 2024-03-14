@@ -47,6 +47,7 @@ public class ItemOnWorld : MonoBehaviour
             thisItem.itemNum ++;
         }
 
-        InventoryManager.RefreshItem();
+        InventoryManager.RefreshWeapons();
+        InventoryManager.RefreshEssentials();
     }
 }

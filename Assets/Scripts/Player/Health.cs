@@ -64,6 +64,18 @@ public class Health : Singleton<Health>
         }
     }
 
+    public bool IsFullHealth()
+    {
+        if(currentHealth == maxHealth)
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+
     public void Heal(int healingAmount)
     {
         if (IsDead)

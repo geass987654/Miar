@@ -88,11 +88,17 @@ public class ActiveWeapon : Singleton<ActiveWeapon>
     {
         //currentCooldownTimer.StartCoolDown();
 
-        ActiveInventory.Instance.WeaponTimer.StartCoolDown();
+        InventoryManager.SetEquipBtnComponent(false);
+        ActiveInventory.Instance.WeaponTimer.StartCoolDown(Foo);
 
         yield return new WaitForSeconds(timeBetweenAttacks);
 
         isAttacking = false;
+    }
+
+    public void Foo()
+    {
+        InventoryManager.SetEquipBtnComponent(true);
     }
 
     //public void SetCooldownTimer(CooldownTimer cooldownTimer)

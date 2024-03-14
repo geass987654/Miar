@@ -3,11 +3,11 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class EquipButton : MonoBehaviour
+public class UseButton : MonoBehaviour
 {
     [SerializeField] private int itemIndex;
-    [SerializeField] private GameObject weaponSlot;
-    [SerializeField] private Inventory weapon; //紀錄用的背包
+    [SerializeField] private GameObject essestialSlot;
+    [SerializeField] private Inventory essential; //紀錄用的背包
     [SerializeField] private GameObject slotGrid;
     [SerializeField] private Text itemInfo;
 
@@ -15,23 +15,24 @@ public class EquipButton : MonoBehaviour
 
     private void Awake()
     {
-        equipedItem = weaponSlot.transform.GetChild(1);
+        equipedItem = essestialSlot.transform.GetChild(1);
     }
 
-    public void EquipWeapon()
+    public void UseItem()
     {
         //需要item在背包中的編號
         itemIndex = InventoryManager.GetCurrentItemIndex();
 
         //取得紀錄中背包的資料、被選取的方格
-        Item item = weapon.itemList[itemIndex];
-        Item switchedItem = weaponSlot.GetComponent<InventorySlot>().GetCurrentItem();
+        Item item = essential.itemList[itemIndex];
+        Item switchedItem = essestialSlot.GetComponent<InventorySlot>().GetCurrentItem();
         Transform choosedItem = slotGrid.transform.GetChild(itemIndex).GetChild(0);
+        string itemName = item.itemName;
 
-        //將其移到武器裝備欄中或交換
+        //將其移到道具裝備欄中或交換
 
-        //設定武器欄位中的裝備資訊、圖片
-        weaponSlot.GetComponent<InventorySlot>().SetCurrentItem(item);
+        //設定道具欄位中的道具資訊、圖片
+        essestialSlot.GetComponent<InventorySlot>().SetCurrentItem(item);
         equipedItem.GetComponent<Image>().sprite = item.itemImage;
         equipedItem.gameObject.SetActive(true);
 
@@ -41,7 +42,7 @@ public class EquipButton : MonoBehaviour
             choosedItem.GetChild(0).GetComponent<Image>().sprite = switchedItem.itemImage;
             choosedItem.GetChild(1).GetComponent<Text>().text = switchedItem.itemNum.ToString();
             choosedItem.transform.parent.GetComponent<Slot>().slotInfo = switchedItem.itemInfo;
-            weapon.itemList[itemIndex] = switchedItem;
+            essential.itemList[itemIndex] = switchedItem;
         }
         else
         {
@@ -50,12 +51,12 @@ public class EquipButton : MonoBehaviour
             choosedItem.GetChild(1).GetComponent<Text>().text = "";
             choosedItem.transform.parent.GetComponent<Slot>().slotInfo = "";
             choosedItem.gameObject.SetActive(false);
-            weapon.itemList[itemIndex] = null;
+            essential.itemList[itemIndex] = null;
         }
 
         itemInfo.text = "";
         gameObject.SetActive(false);
 
-        ActiveInventory.Instance.ChangeWeapon();
+        ActiveInventory.Instance.ChangeItem(itemName);
     }
 }

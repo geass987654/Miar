@@ -6,11 +6,9 @@ using UnityEngine.UI;
 
 public class ItemOnDrag : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler
 {
-    public Transform originalParent;    //道具拖曳前在哪一個方格
-    public Inventory playerBag;          //記錄用的背包
-    public int currentItemIndex;        //記錄用的背包中(playerBag)道具的編號
-
-    public Transform topUI;
+    public Transform originalParent;   //道具拖曳前在哪一個方格
+    public int currentItemIndex;       //記錄用的背包中(playerBag)道具的編號
+    public Inventory playerBag;        //記錄用的背包
 
     //當用游標拖曳方格中的道具時，可將其移動到其他空的方格，若其他方格已有道具，則兩者互換；
 
@@ -19,17 +17,11 @@ public class ItemOnDrag : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDr
         並可用 pointerCurrentRaycast，回傳碰到的第一個 UI，若非UI則回傳null；而eventData在這邊代表滑鼠游標
     */
 
-    private void Awake()
-    {
-        topUI = GameObject.Find("Canvas_Bag").transform;
-    }
-
     public void OnBeginDrag(PointerEventData eventData)
     {
         originalParent = transform.parent;  //紀錄Slot為originalParent
         currentItemIndex = originalParent.GetComponent<Slot>().slotIndex;   //取得方格編號
-        //transform.SetParent(transform.parent.parent);   //開始拖曳時的Item設為Grid的子物件
-        transform.SetParent(topUI);   //開始拖曳時的Item設為Grid的子物件
+        transform.SetParent(originalParent.parent);   //開始拖曳時的Item設為Grid的子物件
         transform.position = eventData.position;        //開始拖曳時的Item位置設為游標位置
         GetComponent<CanvasGroup>().blocksRaycasts = false; //關閉blocksRaycasts功能，避免被拖曳中的UI阻擋
     }
@@ -55,114 +47,158 @@ public class ItemOnDrag : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDr
 
     public void OnEndDrag(PointerEventData eventData)
     {
-        GameObject pointedItem = eventData.pointerCurrentRaycast.gameObject;
+        GameObject pointedGameObject = eventData.pointerCurrentRaycast.gameObject;
 
         //偵測到UI物件，亦即回傳值不為null
-        if (pointedItem != null)
+        if (pointedGameObject != null)
         {
             //偵測到底下是另一個道具
-            if(pointedItem.name == "Item Image")
-            {
-                //設定道具的父物件為方格(Slot)，位置為方格的位置
-                transform.SetParent(pointedItem.transform.parent.parent);
-                transform.position = pointedItem.transform.parent.parent.position;
+            if(pointedGameObject.name == "Item Image")
+            { 
+                //底下要被交換的item
+                Transform switchedItem = pointedGameObject.transform.parent;
+
+                //拖曳的item和底下的item交換內容物，包含圖片、數量、資訊描述
+                Image choosedImage = transform.GetChild(0).GetComponent<Image>();
+                Image switchedImage = pointedGameObject.GetComponent<Image>();
+
+                Sprite tempSprite = choosedImage.sprite;
+                choosedImage.sprite = switchedImage.sprite;
+                switchedImage.sprite = tempSprite;
+
+                Text choosedText = transform.GetChild(1).GetComponent<Text>();
+                Text switchedText = switchedItem.GetChild(1).GetComponent<Text>();
+
+                string tempNum = choosedText.text;
+                choosedText.text = switchedText.text;
+                switchedText.text = tempNum;
+
+                Slot choosedSlot = originalParent.GetComponent<Slot>();
+                Slot switchedSlot = switchedItem.parent.GetComponent<Slot>();
+
+                string tempInfo = choosedSlot.slotInfo;
+                choosedSlot.slotInfo = switchedSlot.slotInfo;
+                switchedSlot.slotInfo = tempInfo;
 
                 //互換記錄用背包(playerBag)的道具資訊，利用slotIndex = itemList的元素編號
                 //1.當前正在拖曳的道具   2.想拖曳過去的方格內的道具，將兩者互換
                 var temp = playerBag.itemList[currentItemIndex];
-                playerBag.itemList[currentItemIndex] = playerBag.itemList[pointedItem.GetComponentInParent<Slot>().slotIndex];
-                playerBag.itemList[pointedItem.GetComponentInParent<Slot>().slotIndex] = temp;
+                playerBag.itemList[currentItemIndex] = playerBag.itemList[pointedGameObject.GetComponentInParent<Slot>().slotIndex];
+                playerBag.itemList[pointedGameObject.GetComponentInParent<Slot>().slotIndex] = temp;
 
-                //設定底下的道具的父物件為原本的方格(Slot)，位置為原本方格的位置
-                pointedItem.transform.parent.SetParent(originalParent);
-                pointedItem.transform.parent.position = originalParent.position;
+                //拖曳的item回到原本的slot
+                transform.SetParent(originalParent);
+                transform.position = originalParent.position;
 
                 GetComponent<CanvasGroup>().blocksRaycasts = true;
 
-                InventoryManager.RefreshItem();
                 InventoryManager.CleanItemInfo();
                 InventoryManager.SetEquipBtnState(false);
+                InventoryManager.SetUseBtnState(false);
 
                 return;
             }
 
             //偵測到底下是空的方格
-            if (pointedItem.name == "Slot(Clone)")
+            if (pointedGameObject.name == "WeaponSlot(Clone)" || pointedGameObject.name == "EssentialSlot(Clone)")
             {
-                Transform emptyItem = pointedItem.transform.GetChild(0);
+                //底下方格空的item
+                Transform emptyItem = pointedGameObject.transform.GetChild(0);
 
-                //設定道具的父物件為空的方格(Slot)，位置為空的方格的位置
-                transform.SetParent(pointedItem.transform);
-                transform.position = pointedItem.transform.position;
+                //拖曳的item和底下方格空的item交換內容物，包含圖片、數量、資訊描述
+                Image choosedImage = transform.GetChild(0).GetComponent<Image>();
+                Image switchedImage = emptyItem.GetChild(0).GetComponent<Image>();
+
+                Sprite tempSprite = choosedImage.sprite;
+                choosedImage.sprite = switchedImage.sprite;
+                switchedImage.sprite = tempSprite;
+
+                Text choosedText = transform.GetChild(1).GetComponent<Text>();
+                Text switchedText = emptyItem.GetChild(1).GetComponent<Text>();
+
+                string tempNum = choosedText.text;
+                choosedText.text = switchedText.text;
+                switchedText.text = tempNum;
+
+                Slot choosedSlot = originalParent.GetComponent<Slot>();
+                Slot switchedSlot = emptyItem.parent.GetComponent<Slot>();
+
+                string tempInfo = choosedSlot.slotInfo;
+                choosedSlot.slotInfo = switchedSlot.slotInfo;
+                switchedSlot.slotInfo = tempInfo;
+
+                //底下方格空的item放入內容物，而原先的item變成空的
+                emptyItem.gameObject.SetActive(true);
+                transform.gameObject.SetActive(false);
 
                 //在itemList新增這項道具，元素編號 = 該道具所處方格的編號
-                playerBag.itemList[pointedItem.GetComponent<Slot>().slotIndex] = playerBag.itemList[currentItemIndex];
+                playerBag.itemList[pointedGameObject.GetComponent<Slot>().slotIndex] = playerBag.itemList[currentItemIndex];
 
                 //若道具拖曳後再放回原先的方格，會導致道具消失，因此只有當方格不同時，才執行以下程式碼
-                if (pointedItem.GetComponent<Slot>().slotIndex != currentItemIndex)
+                if (pointedGameObject.GetComponent<Slot>().slotIndex != currentItemIndex)
                 {
                     playerBag.itemList[currentItemIndex] = null;
                 }
 
-                //設定底下的方格裡的道具的父物件為原本的方格(Slot)，位置為原本方格的位置
-                emptyItem.SetParent(originalParent);
-                emptyItem.position = originalParent.position;
-
-                GetComponent<CanvasGroup>().blocksRaycasts = true;
-
-                InventoryManager.RefreshItem();
-                InventoryManager.CleanItemInfo();
-                InventoryManager.SetEquipBtnState(false);
-
-                return;
-            }
-
-            if (pointedItem.name == "CooldownMaskWeapon")
-            {
-                //Debug.Log("success");
-
-                Transform inventorySlot = pointedItem.transform.parent;
-                Transform equipedItem = inventorySlot.GetChild(1);
-                Item item = playerBag.itemList[currentItemIndex];
-                Item switchedItem = inventorySlot.GetComponent<InventorySlot>().GetCurrentItem();
-
-                //設定拖曳中物件的父物件為原先的方格(Slot)，位置為原先的位置
+                //拖曳的item回到原本的slot
                 transform.SetParent(originalParent);
                 transform.position = originalParent.position;
 
-                //設定武器欄位中的裝備資訊、圖片
-                inventorySlot.GetComponent<InventorySlot>().SetCurrentItem(item);
-                equipedItem.GetComponent<Image>().sprite = item.itemImage;
-                equipedItem.gameObject.SetActive(true);
-
-                if(switchedItem != null)
-                {
-                    //原先被取代掉的武器要回到背包
-                    transform.GetChild(0).GetComponent<Image>().sprite = switchedItem.itemImage;
-                    transform.GetChild(1).GetComponent<Text>().text = switchedItem.itemNum.ToString();
-                    transform.transform.parent.GetComponent<Slot>().slotInfo = switchedItem.itemInfo;
-                    playerBag.itemList[currentItemIndex] = switchedItem;
-                }
-                else
-                {
-                    //清除原先背包中的圖片、數量、紀錄
-                    transform.GetChild(0).GetComponent<Image>().sprite = null;
-                    transform.GetChild(1).GetComponent<Text>().text = "";
-                    transform.transform.parent.GetComponent<Slot>().slotInfo = "";
-                    transform.gameObject.SetActive(false);
-                    playerBag.itemList[currentItemIndex] = null;
-                }
-
-                ActiveInventory.Instance.ChangeWeapon();
-
                 GetComponent<CanvasGroup>().blocksRaycasts = true;
-
+                
                 InventoryManager.CleanItemInfo();
                 InventoryManager.SetEquipBtnState(false);
+                InventoryManager.SetUseBtnState(false);
 
-                //Debug.Log("done");
                 return;
             }
+
+            //if (pointedItem.name == "CooldownMaskWeapon")
+            //{
+            //    //Debug.Log("success");
+
+            //    Transform inventorySlot = pointedItem.transform.parent;
+            //    Transform equipedItem = inventorySlot.GetChild(1);
+            //    Item item = playerBag.itemList[currentItemIndex];
+            //    Item switchedItem = inventorySlot.GetComponent<InventorySlot>().GetCurrentItem();
+
+            //    //設定拖曳中物件的父物件為原先的方格(Slot)，位置為原先的位置
+            //    transform.SetParent(originalParent);
+            //    transform.position = originalParent.position;
+
+            //    //設定武器欄位中的裝備資訊、圖片
+            //    inventorySlot.GetComponent<InventorySlot>().SetCurrentItem(item);
+            //    equipedItem.GetComponent<Image>().sprite = item.itemImage;
+            //    equipedItem.gameObject.SetActive(true);
+
+            //    if(switchedItem != null)
+            //    {
+            //        //原先被取代掉的武器要回到背包
+            //        transform.GetChild(0).GetComponent<Image>().sprite = switchedItem.itemImage;
+            //        transform.GetChild(1).GetComponent<Text>().text = switchedItem.itemNum.ToString();
+            //        transform.transform.parent.GetComponent<Slot>().slotInfo = switchedItem.itemInfo;
+            //        playerBag.itemList[currentItemIndex] = switchedItem;
+            //    }
+            //    else
+            //    {
+            //        //清除原先背包中的圖片、數量、紀錄
+            //        transform.GetChild(0).GetComponent<Image>().sprite = null;
+            //        transform.GetChild(1).GetComponent<Text>().text = "";
+            //        transform.transform.parent.GetComponent<Slot>().slotInfo = "";
+            //        transform.gameObject.SetActive(false);
+            //        playerBag.itemList[currentItemIndex] = null;
+            //    }
+
+            //    ActiveInventory.Instance.ChangeWeapon();
+
+            //    GetComponent<CanvasGroup>().blocksRaycasts = true;
+
+            //    InventoryManager.CleanItemInfo();
+            //    InventoryManager.SetEquipBtnState(false);
+
+            //    //Debug.Log("done");
+            //    return;
+            //}
         }
 
         //其他情況，則將道具回歸到原本的位置
