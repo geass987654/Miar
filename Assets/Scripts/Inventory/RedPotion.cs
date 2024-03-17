@@ -37,7 +37,7 @@ public class RedPotion : MonoBehaviour
 
     public void Drink()
     {
-        if (Health.Instance.IsDead || !redPotion.enabled)
+        if (Health.Instance.IsDead || !redPotion.enabled || !ActiveInventory.Instance.canUse)
         {
             return;
         }
@@ -45,7 +45,7 @@ public class RedPotion : MonoBehaviour
         if (!isHealing && !Health.Instance.IsFullHealth())
         {
             isHealing = true;
-            InventoryManager.SetUseBtnComponent(false);
+            ActiveInventory.Instance.itemCoolDown = true;
             Health.Instance.Heal(healingAmount);
             potionTimer.StartCoolDown(SetIsHealing);
         }
@@ -53,7 +53,7 @@ public class RedPotion : MonoBehaviour
 
     public void SetIsHealing()
     {
-        InventoryManager.SetUseBtnComponent(true);
+        ActiveInventory.Instance.itemCoolDown = false;
         isHealing = false;
     }
 }

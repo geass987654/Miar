@@ -13,6 +13,8 @@ public class ActiveInventory : Singleton<ActiveInventory>
     private readonly int itemSlotIndex = 1;
     private RedPotion redPotion;
     private BluePotion bluePotion;
+    public bool canUse = true;
+    public bool weaponCoolDown = false, itemCoolDown = false;
 
     protected override void Awake()
     {

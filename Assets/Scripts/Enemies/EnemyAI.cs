@@ -93,11 +93,6 @@ public class EnemyAI : MonoBehaviour
         {
             state = State.Roaming;
         }
-
-        //if (elapsedTime > changeChasingDircTime)
-        //{
-        //    roamPosition = GetChasingPosition();
-        //}
     }
 
     private void Attacking()

@@ -38,7 +38,7 @@ public class BluePotion : MonoBehaviour
 
     public void Drink()
     {
-        if (Health.Instance.IsDead || !bluePotion.enabled)
+        if (Health.Instance.IsDead || !bluePotion.enabled || !ActiveInventory.Instance.canUse)
         {
             return;
         }
@@ -46,7 +46,7 @@ public class BluePotion : MonoBehaviour
         if (!isAddingTime)
         {
             isAddingTime = true;
-            InventoryManager.SetUseBtnComponent(false);
+            ActiveInventory.Instance.itemCoolDown = true;
             timer.MoreTime();
             potionTimer.StartCoolDown(SetIsPausing);
         }
@@ -54,7 +54,7 @@ public class BluePotion : MonoBehaviour
 
     public void SetIsPausing()
     {
-        InventoryManager.SetUseBtnComponent(true);
+        ActiveInventory.Instance.itemCoolDown = false;
         isAddingTime = false;
     }
 }

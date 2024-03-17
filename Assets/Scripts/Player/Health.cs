@@ -16,17 +16,14 @@ public class Health : Singleton<Health>
     private int currentHealth;
     private bool canTakeDamage = true;
     private float damageRecoveryTime = 0.5f;
-    private Slider healthSlider;
-    private const string HEALTH_SLIDER_TEXT = "Health Slider";
-    private const string SCENE_TEXT = "TestScene_0228";
+    //private const string SCENE_TEXT = "TestScene_0309";
     public bool IsDead { get; private set; }
-    private Vector2 playerStartingPos;
 
-    //[SerializeField] private GameObject HealthPointBar;
-    //[SerializeField] private Sprite fullHeart;
-    //[SerializeField] private Sprite emptyHeart;
+    [SerializeField] private GameObject HealthPointBar;
+    [SerializeField] private Sprite fullHeart;
+    [SerializeField] private Sprite emptyHeart;
+    private GameObject[] Hearts;
     //[SerializeField] private GameObject gameOver;
-    //private GameObject[] Hearts;
 
 
 
@@ -34,24 +31,21 @@ public class Health : Singleton<Health>
     {
         base.Awake();
 
-        //Hearts = new GameObject[maxHealth];
-
-        //for(int i = 0; i < HealthPointBar.transform.childCount; i++)
-        //{
-        //    Hearts[i] = HealthPointBar.transform.GetChild(i).gameObject;
-        //}
-
         knockBack = transform.GetComponent<KnockBack>();
-
         flash = transform.GetComponent<Flash>();
+        Hearts = new GameObject[maxHealth];
+
+        for (int i = 0; i < HealthPointBar.transform.childCount; i++)
+        {
+            Hearts[i] = HealthPointBar.transform.GetChild(i).gameObject;
+        }
     }
 
     private void Start()
     {
         IsDead = false;
-        playerStartingPos = Player.Instance.transform.position;
         currentHealth = maxHealth;
-        UpdateHealthSlider();
+        UpdateHealthPointBar();
     }
 
     private void OnCollisionStay2D(Collision2D collision)
@@ -88,7 +82,7 @@ public class Health : Singleton<Health>
             if(currentHealth < maxHealth)
             {
                 currentHealth += 1;
-                UpdateHealthSlider();
+                UpdateHealthPointBar();
             }
             else
             {
@@ -109,7 +103,7 @@ public class Health : Singleton<Health>
         canTakeDamage = false;
         currentHealth -= damageAmount;
         StartCoroutine(DamageRecoveryRoutine());
-        UpdateHealthSlider();
+        UpdateHealthPointBar();
         CheckPlayerDeath();
     }
 
@@ -119,15 +113,17 @@ public class Health : Singleton<Health>
         canTakeDamage = true;
     }
 
-    private void UpdateHealthSlider()
+    private void UpdateHealthPointBar()
     {
-        if(healthSlider == null)
+        foreach(Transform heart in HealthPointBar.transform)
         {
-            healthSlider = GameObject.Find(HEALTH_SLIDER_TEXT).GetComponent<Slider>();
+            heart.GetComponent<Image>().sprite = emptyHeart;
         }
 
-        healthSlider.maxValue = maxHealth;
-        healthSlider.value = currentHealth;
+        for(int i = 0; i < currentHealth; i++)
+        {
+            Hearts[i].GetComponent<Image>().sprite = fullHeart;
+        }
     }
 
     private void CheckPlayerDeath()
@@ -144,55 +140,15 @@ public class Health : Singleton<Health>
 
     private void PlayerDeath()
     {
-        Invoke("ReloadScene", 2f);
+        //InventoryManager.SetCanInherit(true);
+        Invoke("LoadScene", 2f);
         Instantiate(playerDeathVFXPrefab, transform.position, Quaternion.identity);
         Player.Instance.gameObject.SetActive(false);
     }
 
-    private void ReloadScene()
+    private void LoadScene()
     {
         Destroy(gameObject);
-        SceneManager.LoadScene(SCENE_TEXT);
+        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }
-
-    //public void TakeDamage(int damageAmount, Transform damageSource)
-    //{
-    //    for(int i = 0; i < damageAmount; i++)
-    //    {
-    //        if(currentHealth <= 0)
-    //        {
-    //            Time.timeScale = 0;
-
-    //            if (!gameOver.activeSelf)
-    //            {
-    //                gameOver.SetActive(true);
-    //            }
-
-    //            break;
-    //        }
-
-    //        Hearts[currentHealth - 1].GetComponent<Image>().sprite = emptyHeart;
-    //        //Debug.Log("currentHealth = " + currentHealth);
-    //        currentHealth--;
-    //    }
-
-    //    knockBack.GetKnockedBack(damageSource.transform, knockBackThrust);
-
-    //    StartCoroutine(flash.FlashRoutine());
-    //}
-
-    //public void Heal(int healAmount)
-    //{
-    //    for (int i = 0; i < healAmount; i++)
-    //    {
-    //        if (currentHealth >= maxHealth)
-    //        {
-    //            break;
-    //        }
-
-    //        Hearts[currentHealth].GetComponent<Image>().sprite = fullHeart;
-    //        //Debug.Log("currentHealth = " + currentHealth);
-    //        currentHealth++;
-    //    }
-    //}
 }

@@ -1,0 +1,21 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 39607e5903f232348a507fe33818603d, type: 3}
+  m_Name: Staff
+  m_EditorClassIdentifier: 
+  itemName: Staff
+  itemImage: {fileID: 21300000, guid: 4e407d8b13962c341bf394ce01e9ca52, type: 3}
+  itemNum: 1
+  itemAttribute: Equipment
+  itemInfo: "\u9019\u662F\u4E00\u628A\u666E\u901A\u7684\u6CD5\u6756\u3002"
+  equiped: 0
+  weaponInfo: {fileID: 11400000, guid: 17e40ce4f85b0a34a92ac0c069b0032b, type: 2}

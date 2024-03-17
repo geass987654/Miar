@@ -29,14 +29,18 @@ public class Player : Singleton<Player>
         knockBack = GetComponent<KnockBack>();
     }
 
+    /***********   start有修改   *************/
     private void Start()
     {
-        playerControls.Movement.Move.performed += value => ReadPlayerInput(value.ReadValue<Vector2>()); //當輸入值變動時，讀取並指派給direction
-        playerControls.Movement.Move.canceled += _ => direction = Vector2.zero; //鬆開按鍵時把direction設為零向量
-
+        playerControls.Movement.Move.performed += value => ReadPlayerInput(value.ReadValue<Vector2>());
+        playerControls.Movement.Move.canceled += _ => direction = Vector2.zero;
         playerControls.Movement.Move.performed += _ => SwitchAnim();
-
         playerControls.Bag.Open.started += _ => OpenBag(); //在不傳遞參數的情況下，按下按鍵時呼叫OpenBag()
+
+        //InventoryManager.Clear();
+        InventoryManager.Initialize();
+        InventoryManager.RefreshWeapons();
+        InventoryManager.RefreshEssentials();
 
         //ActiveInventory.Instance.EquipStartingWeapon();
     }
@@ -62,7 +66,6 @@ public class Player : Singleton<Player>
         {
             return;
         }
-
         this.direction = direction;
     }
 
@@ -78,7 +81,6 @@ public class Player : Singleton<Player>
             animator.SetFloat("horizontal", direction.x);
             animator.SetFloat("vertical", direction.y);
         }
-
         animator.SetFloat("magnitude", direction.sqrMagnitude);
     }
 
@@ -92,12 +94,18 @@ public class Player : Singleton<Player>
         rb.MovePosition(rb.position + direction * (moveSpeed * Time.fixedDeltaTime));
     }
 
+    /***********   OpenBag有修改   *************/
     public void OpenBag()   //此函式在按下關閉背包按鈕時也必須呼叫，因此宣告為public
     {
         isBagOpen = !isBagOpen; //按下按鍵開啟背包；再次按下按鍵關閉背包
         playerBag.SetActive(isBagOpen);
 
         ActiveWeapon.Instance.canAttack = !playerBag.activeSelf; //開啟背包時無法攻擊
+        ActiveInventory.Instance.canUse = !playerBag.activeSelf; //開啟背包時無法使用道具
+
+        InventoryManager.SetEquipBtnState(false);
+        InventoryManager.SetUseBtnState(false);
+        InventoryManager.CleanItemInfo();
 
     }
 

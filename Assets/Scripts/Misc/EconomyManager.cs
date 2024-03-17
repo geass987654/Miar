@@ -6,20 +6,24 @@ using UnityEngine;
 public class EconomyManager :Singleton<EconomyManager>
 {
     private TMP_Text goldText;
-    private int currentGold = 0;
+    public int currentGold = 0;
 
     const string COIN_AMOUNT_TEXT = "Gold Coin Amount Text";
 
-    public void UpdateCurrentGold()
+    public void PickUpGold()
     {
         currentGold++;
 
-        if(goldText == null)
+        UpdateCurrentGold();
+    }
+
+    public void UpdateCurrentGold()
+    {
+        if (goldText == null)
         {
             goldText = GameObject.Find(COIN_AMOUNT_TEXT).GetComponent<TMP_Text>();
         }
 
         goldText.text = currentGold.ToString("D3");
     }
-
 }
