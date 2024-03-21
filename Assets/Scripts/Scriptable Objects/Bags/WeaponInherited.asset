@@ -13,9 +13,9 @@ MonoBehaviour:
   m_Name: WeaponInherited
   m_EditorClassIdentifier: 
   itemList:
-  - {fileID: 11400000, guid: ffc7182e5eb957348a37fae939eef13d, type: 2}
-  - {fileID: 11400000, guid: 2f3d7e0d0def5674fbb19332697c089c, type: 2}
-  - {fileID: 11400000, guid: 5792c7da2c4f9a14fa2833676cb206a6, type: 2}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
   - {fileID: 0}
   - {fileID: 0}
   - {fileID: 0}

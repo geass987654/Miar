@@ -3,38 +3,66 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class InheritanceBox : MonoBehaviour
+public class InheritanceBox : Singleton<InheritanceBox>
 {
     public Inventory weapon, essential;                                 //紀錄背包中的道具
     public GameObject weaponGrid, essentialGrid;                        //方格排列
     public GameObject weaponSlot, essentialSlot;                        //空的方格
-    public Text itemInfo;                                               //道具資訊
     public List<GameObject> weaponSlots, essentialSlots;                //儲存背包中的道具
     public int currentItemIndex;
     [SerializeField] private GameObject InventoryWeaponSlot;            //武器欄位
     [SerializeField] private GameObject InventoryItemSlot;              //道具欄位
+
     [SerializeField] private Inventory weaponInherited, essentialInherited;
+    [SerializeField] private GameObject weaponInheritedGrid, essentialInheritedGrid;
+    [SerializeField] private GameObject weaponSlot_Box, essentialSlot_Box;
+    public List<GameObject> weaponInheritedSlots, essentialInheritedSlots;
+
     private static int currentGold = 0;
     private static bool haveBeenStored = false;
     private static bool canInherit = false;
     private readonly Color32 activeColor = new Color32(166, 24, 4, 255);
 
-    private void Awake()
+    protected override void Awake()
     {
-
+        base.Awake();
     }
 
     private void Start()
     {
         weaponSlots = new List<GameObject>();
         essentialSlots = new List<GameObject>();
+        weaponInheritedSlots = new List<GameObject>();
+        essentialInheritedSlots = new List<GameObject>();
     }
 
     private void OnEnable()
     {
-        //RefreshWeapons();
-        //RefreshEssentials();
-        itemInfo.text = "";
+        RefreshWeapons();
+        RefreshWeaponsInherited();
+        RefreshEssentials();
+        RefreshEssentialsInherited();
+        ActiveWeapon.Instance.canAttack = false; //開啟繼承箱時無法攻擊
+        ActiveInventory.Instance.canUse = false; //開啟繼承箱時無法使用道具
+
+        if(haveBeenStored && canInherit) //曾經儲存過資料，且角色死亡過
+        {
+            InheritGold();
+            Debug.Log("InheritGold");
+        }
+        else
+        {
+            StoreGold();
+            Debug.Log("StoreGold");
+        }
+    }
+
+    private void OnDisable()
+    {
+        InventoryManager.RefreshWeapons();
+        InventoryManager.RefreshEssentials();
+        ActiveWeapon.Instance.canAttack = true;
+        ActiveInventory.Instance.canUse = true;
     }
 
     public void RefreshWeapons()
@@ -82,14 +110,50 @@ public class InheritanceBox : MonoBehaviour
         }
     }
 
-    public void UpdateItemInfo(string itemDescription)
+    public void RefreshWeaponsInherited()
     {
-        itemInfo.text = itemDescription;
+        for (int i = 0; i < weaponInheritedGrid.transform.childCount; i++)
+        {
+            if (weaponInheritedGrid.transform.childCount == 0)
+            {
+                break;
+            }
+            Destroy(weaponInheritedGrid.transform.GetChild(i).gameObject);
+
+        }
+        weaponInheritedSlots.Clear();
+
+        for (int i = 0; i < weaponInherited.itemList.Count; i++)
+        {
+            weaponInheritedSlots.Add(Instantiate(weaponSlot_Box));
+            weaponInheritedSlots[i].transform.SetParent(weaponInheritedGrid.transform);
+            weaponInheritedSlots[i].GetComponent<Slot>().slotIndex = i;
+            weaponInheritedSlots[i].GetComponent<Slot>().SetUpSlot(weaponInherited.itemList[i]);
+            weaponInheritedSlots[i].transform.GetChild(0).GetChild(0).gameObject.name += "_Box";
+        }
     }
 
-    public void CleanItemInfo()
+    public void RefreshEssentialsInherited()
     {
-        itemInfo.text = "";
+        for (int i = 0; i < essentialInheritedGrid.transform.childCount; i++)
+        {
+            if (essentialInheritedGrid.transform.childCount == 0)
+            {
+                break;
+            }
+            Destroy(essentialInheritedGrid.transform.GetChild(i).gameObject);
+
+        }
+        essentialInheritedSlots.Clear();
+
+        for (int i = 0; i < essentialInherited.itemList.Count; i++)
+        {
+            essentialInheritedSlots.Add(Instantiate(essentialSlot_Box));
+            essentialInheritedSlots[i].transform.SetParent(essentialInheritedGrid.transform);
+            essentialInheritedSlots[i].GetComponent<Slot>().slotIndex = i;
+            essentialInheritedSlots[i].GetComponent<Slot>().SetUpSlot(essentialInherited.itemList[i]);
+            essentialInheritedSlots[i].transform.GetChild(0).GetChild(0).gameObject.name += "_Box";
+        }
     }
 
     public void UpdateCurrentItemIndex(int slotIndex)
@@ -102,73 +166,15 @@ public class InheritanceBox : MonoBehaviour
         return currentItemIndex;
     }
 
-    public void Clear()
+    public void StoreGold()
     {
-        for (int i = 0; i < weapon.itemList.Count; i++)
-        {
-            weapon.itemList[i] = null;
-        }
-        for (int i = 0; i < essential.itemList.Count; i++)
-        {
-            essential.itemList[i] = null;
-        }
-    }
-
-    public void Store()
-    {
-        for (int i = 0; i < weaponInherited.itemList.Count; i++)
-        {
-            weaponInherited.itemList[i] = weapon.itemList[i];
-        }
-        for (int i = 0; i < essentialInherited.itemList.Count; i++)
-        {
-            essentialInherited.itemList[i] = essential.itemList[i];
-        }
-
-        //Item weaponInSlot = InventoryWeaponSlot.GetComponent<InventorySlot>().GetCurrentItem();
-
-        //if (weaponInSlot != null)
-        //{
-        //    for (int i = 0; i < weaponInherited.itemList.Count; i++)
-        //    {
-        //        if (weaponInherited.itemList[i] == null)
-        //        {
-        //            weaponInherited.itemList[i] = weaponInSlot;
-        //            break;
-        //        }
-        //    }
-        //}
-
-        //Item essentialInSlot = InventoryItemSlot.GetComponent<InventorySlot>().GetCurrentItem();
-
-        //if (essentialInSlot != null)
-        //{
-        //    for (int i = 0; i < essentialInherited.itemList.Count; i++)
-        //    {
-        //        if (essentialInherited.itemList[i] == null)
-        //        {
-        //            essentialInherited.itemList[i] = essentialInSlot;
-        //            break;
-        //        }
-        //    }
-        //}
-
         currentGold = EconomyManager.Instance.currentGold;
 
         haveBeenStored = true;
     }
 
-    public void Inherit()
+    public void InheritGold()
     {
-        for (int i = 0; i < weapon.itemList.Count; i++)
-        {
-            weapon.itemList[i] = weaponInherited.itemList[i];
-        }
-        for (int i = 0; i < essential.itemList.Count; i++)
-        {
-            essential.itemList[i] = essentialInherited.itemList[i];
-        }
-
         EconomyManager.Instance.currentGold = currentGold;
         EconomyManager.Instance.UpdateCurrentGold();
 
@@ -178,10 +184,5 @@ public class InheritanceBox : MonoBehaviour
     public void SetCanInherit(bool state)
     {
         canInherit = state;
-    }
-
-    public bool CanInheritFromBox()
-    {
-        return haveBeenStored && canInherit;
     }
 }

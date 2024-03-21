@@ -26,6 +26,11 @@ public class Slot : MonoBehaviour
         {
             InventoryManager.SetEquipBtnComponent(true);
         }
+
+        if(InheritanceBox.Instance != null && InheritanceBox.Instance.gameObject.activeSelf)
+        {
+            InheritanceBox.Instance.UpdateCurrentItemIndex(slotIndex);
+        }
     }
     public void ItemOnClickedInEssentials()
     {
@@ -40,8 +45,12 @@ public class Slot : MonoBehaviour
         {
             InventoryManager.SetUseBtnComponent(true);
         }
-    }
 
+        if (InheritanceBox.Instance != null && InheritanceBox.Instance.gameObject.activeSelf)
+        {
+            InheritanceBox.Instance.UpdateCurrentItemIndex(slotIndex);
+        }
+    }
     public void SetUpSlot(Item item)
     {
         if (item == null)

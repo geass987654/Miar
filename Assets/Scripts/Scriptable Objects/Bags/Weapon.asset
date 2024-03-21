@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Weapon
   m_EditorClassIdentifier: 
   itemList:
-  - {fileID: 0}
+  - {fileID: 11400000, guid: ffc7182e5eb957348a37fae939eef13d, type: 2}
   - {fileID: 0}
   - {fileID: 0}
   - {fileID: 0}

@@ -81,6 +81,7 @@ public class InventoryManager : MonoBehaviour
             if (instance.weapon.itemList[i] != null)
             {
                 instance.weapon.itemList[i].equiped = false;
+                instance.weapon.itemList[i].isCooldown = false;
             }
         }
 
@@ -89,6 +90,7 @@ public class InventoryManager : MonoBehaviour
             if (instance.essential.itemList[i] != null)
             {
                 instance.essential.itemList[i].equiped = false;
+                instance.essential.itemList[i].isCooldown = false;
             }
         }
     }
@@ -195,17 +197,17 @@ public class InventoryManager : MonoBehaviour
         }
     }
 
-    //public static void Clear()
-    //{
-    //    for (int i = 0; i < instance.weapon.itemList.Count; i++)
-    //    {
-    //        instance.weapon.itemList[i] = null;
-    //    }
-    //    for (int i = 0; i < instance.essential.itemList.Count; i++)
-    //    {
-    //        instance.essential.itemList[i] = null;
-    //    }
-    //}
+    public static void Clear()
+    {
+        for (int i = 0; i < instance.weapon.itemList.Count; i++)
+        {
+            instance.weapon.itemList[i] = null;
+        }
+        for (int i = 0; i < instance.essential.itemList.Count; i++)
+        {
+            instance.essential.itemList[i] = null;
+        }
+    }
 
     //public static void Store()
     //{
@@ -219,7 +221,7 @@ public class InventoryManager : MonoBehaviour
     //    }
 
     //    Item weaponInSlot = instance.InventoryWeaponSlot.GetComponent<InventorySlot>().GetCurrentItem();
-        
+
     //    if(weaponInSlot != null)
     //    {
     //        for(int i = 0; i < instance.weaponInherited.itemList.Count; i++)

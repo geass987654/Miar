@@ -43,11 +43,11 @@ public class Timer : MonoBehaviour
 
         yield return new WaitForSeconds(1f);
 
-        Time.timeScale = 0;
 
         if (!gameOver.activeSelf)
         {
             gameOver.SetActive(true);
+            Health.Instance.PlayerDeath();
         }
     }
 

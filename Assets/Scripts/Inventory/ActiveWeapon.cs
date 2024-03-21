@@ -89,6 +89,7 @@ public class ActiveWeapon : Singleton<ActiveWeapon>
         //currentCooldownTimer.StartCoolDown();
 
         ActiveInventory.Instance.weaponCoolDown = true;
+        ActiveInventory.Instance.weaponInventorySlot.GetComponent<InventorySlot>().GetCurrentItem().isCooldown = true;
         ActiveInventory.Instance.WeaponTimer.StartCoolDown(Foo);
 
         yield return new WaitForSeconds(timeBetweenAttacks);
@@ -98,6 +99,7 @@ public class ActiveWeapon : Singleton<ActiveWeapon>
 
     public void Foo()
     {
+        ActiveInventory.Instance.weaponInventorySlot.GetComponent<InventorySlot>().GetCurrentItem().isCooldown = false;
         ActiveInventory.Instance.weaponCoolDown = false;
     }
 

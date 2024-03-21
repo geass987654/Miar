@@ -46,6 +46,7 @@ public class RedPotion : MonoBehaviour
         {
             isHealing = true;
             ActiveInventory.Instance.itemCoolDown = true;
+            ActiveInventory.Instance.itemInventorySlot.GetComponent<InventorySlot>().GetCurrentItem().isCooldown = true;
             Health.Instance.Heal(healingAmount);
             potionTimer.StartCoolDown(SetIsHealing);
         }
@@ -53,6 +54,7 @@ public class RedPotion : MonoBehaviour
 
     public void SetIsHealing()
     {
+        ActiveInventory.Instance.itemInventorySlot.GetComponent<InventorySlot>().GetCurrentItem().isCooldown = false;
         ActiveInventory.Instance.itemCoolDown = false;
         isHealing = false;
     }

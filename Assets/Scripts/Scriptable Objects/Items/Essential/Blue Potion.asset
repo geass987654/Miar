@@ -18,4 +18,5 @@ MonoBehaviour:
   itemAttribute: Essential
   itemInfo: "\u9019\u662F\u4E00\u74F6\u5145\u6EFF\u6CD5\u529B\u7684\u85E5\u5291\u3002\n"
   equiped: 0
+  isCooldown: 0
   weaponInfo: {fileID: 0}

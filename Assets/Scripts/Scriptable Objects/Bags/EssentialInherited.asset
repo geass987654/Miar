@@ -13,8 +13,8 @@ MonoBehaviour:
   m_Name: EssentialInherited
   m_EditorClassIdentifier: 
   itemList:
-  - {fileID: 11400000, guid: b5e10852d63181648b6365e6a6f0d341, type: 2}
-  - {fileID: 11400000, guid: 2e4c44e61aebb864cadfad1bb05f5cd8, type: 2}
+  - {fileID: 0}
+  - {fileID: 0}
   - {fileID: 0}
   - {fileID: 0}
   - {fileID: 0}

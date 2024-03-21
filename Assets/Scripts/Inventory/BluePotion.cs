@@ -47,6 +47,7 @@ public class BluePotion : MonoBehaviour
         {
             isAddingTime = true;
             ActiveInventory.Instance.itemCoolDown = true;
+            ActiveInventory.Instance.itemInventorySlot.GetComponent<InventorySlot>().GetCurrentItem().isCooldown = true;
             timer.MoreTime();
             potionTimer.StartCoolDown(SetIsPausing);
         }
@@ -54,6 +55,7 @@ public class BluePotion : MonoBehaviour
 
     public void SetIsPausing()
     {
+        ActiveInventory.Instance.itemInventorySlot.GetComponent<InventorySlot>().GetCurrentItem().isCooldown = false;
         ActiveInventory.Instance.itemCoolDown = false;
         isAddingTime = false;
     }

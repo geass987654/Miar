@@ -6,23 +6,14 @@ using UnityEngine;
 public class Interaction_Box : MonoBehaviour
 {
     [SerializeField] private GameObject f;
+    [SerializeField] private GameObject inheritanceBox;
 
     private void Update()
     {
         if (f.activeSelf && Input.GetKeyDown(KeyCode.F))
         {
-            //if (InventoryManager.CanInheritFromBox())
-            //{
-            //    InventoryManager.Inherit();
-            //    InventoryManager.RefreshWeapons();
-            //    InventoryManager.RefreshEssentials();
-            //    Debug.Log("Inherit");
-            //}
-            //else
-            //{
-            //    InventoryManager.Store();
-            //    Debug.Log("Store");
-            //}
+
+            inheritanceBox.SetActive(true);
 
             f.SetActive(false);
             enabled = false;

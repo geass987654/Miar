@@ -19,6 +19,13 @@ public class InventorySlot : MonoBehaviour
 
     public void SetCurrentItem(Item item)
     {
+        if(item == null)
+        {
+            currentItem = null;
+            weaponInfo = null;
+            return;
+        }
+
         currentItem = item;
         weaponInfo = item.weaponInfo;
     }

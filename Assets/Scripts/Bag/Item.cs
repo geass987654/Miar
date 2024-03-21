@@ -13,5 +13,6 @@ public class Item : ScriptableObject
     [TextArea]
     public string itemInfo;
     public bool equiped;
+    public bool isCooldown;
     public WeaponInfo weaponInfo;
 }

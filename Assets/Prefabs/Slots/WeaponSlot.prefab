@@ -199,7 +199,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   originalParent: {fileID: 0}
   currentItemIndex: 0
-  playerBag: {fileID: 11400000, guid: bee555021d221624babf76a8a5cd239a, type: 2}
+  originalBag: {fileID: 11400000, guid: bee555021d221624babf76a8a5cd239a, type: 2}
+  newBag: {fileID: 11400000, guid: b98dba45e0dd080489c4e38220fc6db2, type: 2}
 --- !u!225 &271058938242654266
 CanvasGroup:
   m_ObjectHideFlags: 0

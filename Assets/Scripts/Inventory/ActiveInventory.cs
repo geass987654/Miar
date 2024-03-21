@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class ActiveInventory : Singleton<ActiveInventory>
 {
@@ -15,6 +16,7 @@ public class ActiveInventory : Singleton<ActiveInventory>
     private BluePotion bluePotion;
     public bool canUse = true;
     public bool weaponCoolDown = false, itemCoolDown = false;
+    public Transform weaponInventorySlot, itemInventorySlot;
 
     protected override void Awake()
     {
@@ -22,9 +24,12 @@ public class ActiveInventory : Singleton<ActiveInventory>
 
         playerControls = new PlayerControls();
 
-        WeaponTimer = transform.GetChild(weaponSlotIndex).GetComponent<CooldownTimer>();
-        redPotion = transform.GetChild(itemSlotIndex).GetComponent<RedPotion>();
-        bluePotion = transform.GetChild(itemSlotIndex).GetComponent<BluePotion>();
+        weaponInventorySlot = transform.GetChild(weaponSlotIndex);
+        itemInventorySlot = transform.GetChild(itemSlotIndex);
+
+        WeaponTimer = weaponInventorySlot.GetComponent<CooldownTimer>();
+        redPotion = itemInventorySlot.GetComponent<RedPotion>();
+        bluePotion = itemInventorySlot.GetComponent<BluePotion>();
     }
 
     private void Start()
@@ -58,7 +63,7 @@ public class ActiveInventory : Singleton<ActiveInventory>
             Destroy(ActiveWeapon.Instance.CurrentActiveWeapon.gameObject);
         }
 
-        weaponInfo = transform.GetChild(weaponSlotIndex).GetComponent<InventorySlot>().GetWeaponInfo();
+        weaponInfo = weaponInventorySlot.GetComponent<InventorySlot>().GetWeaponInfo();
 
         if (weaponInfo == null)
         {
@@ -98,6 +103,27 @@ public class ActiveInventory : Singleton<ActiveInventory>
                 Debug.Log("Change Item Error");
                 break;
         }
+    }
+
+    public void RemoveWeapon()
+    {
+
+        weaponInventorySlot.GetChild(1).GetComponent<Image>().sprite = null;
+        weaponInventorySlot.GetChild(1).gameObject.SetActive(false);
+        weaponInventorySlot.GetComponent<InventorySlot>().SetCurrentItem(null);
+
+        Destroy(ActiveWeapon.Instance.transform.GetChild(1).gameObject);
+        ActiveWeapon.Instance.NullWeapon();
+    }
+
+    public void RemoveItem()
+    {
+        itemInventorySlot.GetChild(1).GetComponent<Image>().sprite = null;
+        itemInventorySlot.GetChild(1).gameObject.SetActive(false);
+        itemInventorySlot.GetComponent<InventorySlot>().SetCurrentItem(null);
+
+        redPotion.enabled = false;
+        bluePotion.enabled = false;
     }
 
     //private void ToggleActiveSlot(int numValue)

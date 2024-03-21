@@ -16,7 +16,6 @@ public class Health : Singleton<Health>
     private int currentHealth;
     private bool canTakeDamage = true;
     private float damageRecoveryTime = 0.5f;
-    //private const string SCENE_TEXT = "TestScene_0309";
     public bool IsDead { get; private set; }
 
     [SerializeField] private GameObject HealthPointBar;
@@ -138,9 +137,13 @@ public class Health : Singleton<Health>
         }
     }
 
-    private void PlayerDeath()
+    public void PlayerDeath()
     {
-        //InventoryManager.SetCanInherit(true);
+        if(InheritanceBox.Instance != null)
+        {
+            InheritanceBox.Instance.SetCanInherit(true);
+        }
+
         Invoke("LoadScene", 2f);
         Instantiate(playerDeathVFXPrefab, transform.position, Quaternion.identity);
         Player.Instance.gameObject.SetActive(false);

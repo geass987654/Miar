@@ -19,6 +19,12 @@ public class Player : Singleton<Player>
     private bool isBagOpen = false;
     public bool isFreezed = false;
 
+    [SerializeField] private GameObject activeInventory; //武器跟道具欄位
+    [SerializeField] private GameObject canvas_UI;       //遊玩UI
+    private RectTransform currentRect;
+    private Vector2 originalPosition;
+    private Vector2 newPosition;
+
     protected override void Awake()
     {
         base.Awake();
@@ -27,6 +33,10 @@ public class Player : Singleton<Player>
         rb = GetComponent<Rigidbody2D>();
         animator = GetComponent<Animator>();
         knockBack = GetComponent<KnockBack>();
+
+        currentRect = activeInventory.transform.GetComponent<RectTransform>();
+        originalPosition = currentRect.anchoredPosition;
+        newPosition = new Vector2(-900, 150);
     }
 
     /***********   start有修改   *************/
@@ -37,8 +47,8 @@ public class Player : Singleton<Player>
         playerControls.Movement.Move.performed += _ => SwitchAnim();
         playerControls.Bag.Open.started += _ => OpenBag(); //在不傳遞參數的情況下，按下按鍵時呼叫OpenBag()
 
-        //InventoryManager.Clear();
         InventoryManager.Initialize();
+        InventoryManager.Clear();;
         InventoryManager.RefreshWeapons();
         InventoryManager.RefreshEssentials();
 
@@ -106,6 +116,19 @@ public class Player : Singleton<Player>
         InventoryManager.SetEquipBtnState(false);
         InventoryManager.SetUseBtnState(false);
         InventoryManager.CleanItemInfo();
+
+        if (isBagOpen)
+        {
+            activeInventory.transform.SetParent(playerBag.transform);
+            //Debug.Log(currentRect.anchoredPosition);
+            currentRect.anchoredPosition = newPosition;
+            //Debug.Log(currentRect.anchoredPosition);
+        }
+        else
+        {
+            activeInventory.transform.SetParent(canvas_UI.transform);
+            currentRect.anchoredPosition = originalPosition;
+        }
 
     }
 
