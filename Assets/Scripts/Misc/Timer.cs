@@ -43,7 +43,6 @@ public class Timer : MonoBehaviour
 
         yield return new WaitForSeconds(1f);
 
-
         if (!gameOver.activeSelf)
         {
             gameOver.SetActive(true);

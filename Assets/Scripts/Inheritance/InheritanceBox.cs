@@ -21,7 +21,8 @@ public class InheritanceBox : Singleton<InheritanceBox>
     private static int currentGold = 0;
     private static bool haveBeenStored = false;
     private static bool canInherit = false;
-    private readonly Color32 activeColor = new Color32(166, 24, 4, 255);
+
+    private readonly string postfix = "_Box";                           //後綴，用來辨識背包和繼承箱
 
     protected override void Awake()
     {
@@ -129,7 +130,7 @@ public class InheritanceBox : Singleton<InheritanceBox>
             weaponInheritedSlots[i].transform.SetParent(weaponInheritedGrid.transform);
             weaponInheritedSlots[i].GetComponent<Slot>().slotIndex = i;
             weaponInheritedSlots[i].GetComponent<Slot>().SetUpSlot(weaponInherited.itemList[i]);
-            weaponInheritedSlots[i].transform.GetChild(0).GetChild(0).gameObject.name += "_Box";
+            weaponInheritedSlots[i].transform.GetChild(0).GetChild(0).gameObject.name += postfix;
         }
     }
 
@@ -152,7 +153,7 @@ public class InheritanceBox : Singleton<InheritanceBox>
             essentialInheritedSlots[i].transform.SetParent(essentialInheritedGrid.transform);
             essentialInheritedSlots[i].GetComponent<Slot>().slotIndex = i;
             essentialInheritedSlots[i].GetComponent<Slot>().SetUpSlot(essentialInherited.itemList[i]);
-            essentialInheritedSlots[i].transform.GetChild(0).GetChild(0).gameObject.name += "_Box";
+            essentialInheritedSlots[i].transform.GetChild(0).GetChild(0).gameObject.name += postfix;
         }
     }
 

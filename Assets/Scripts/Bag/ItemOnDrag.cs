@@ -6,10 +6,27 @@ using UnityEngine.UI;
 
 public class ItemOnDrag : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler
 {
-    public Transform originalParent;   //道具拖曳前在哪一個方格
-    public int currentItemIndex;       //記錄用的背包中(originalBag)道具的編號
+    public Transform originalParent;     //道具拖曳前在哪一個方格
+    public int currentItemIndex;         //記錄用的背包中(originalBag)道具的編號
     public Inventory originalBag;        //記錄用的背包
     public Inventory newBag;
+
+    private readonly string weaponSlotClone = "WeaponSlot(Clone)";               //背包中，武器頁面，空的方格的名稱
+    private readonly string essentialSlotClone = "EssentialSlot(Clone)";         //背包中，道具頁面，空的方格的名稱
+
+    private readonly string weaponSlot_BoxClone = "WeaponSlot_Box(Clone)";       //繼承箱中，武器頁面，空的方格的名稱
+    private readonly string essentialSlot_BoxClone = "EssentialSlot_Box(Clone)"; //繼承箱中，道具頁面，空的方格的名稱
+
+    private readonly string itemImage = "Item Image";                            //背包中，不論武器道具，滿的方格的名稱
+    private readonly string itemImage_Box = "Item Image_Box";                    //繼承箱中，不論武器道具，滿的方格的名稱
+
+    private readonly string weapon = "Weapon";                                   //背包中，武器頁面，後端的資料庫名稱
+
+    private readonly string WeaponInherited = "WeaponInherited";                 //繼承箱中，武器頁面，後端的資料庫名稱
+    private readonly string EssentialInherited = "EssentialInherited";           //繼承箱中，道具頁面，後端的資料庫名稱
+
+    private readonly string postfix = "_Box";                                    //後綴，用來辨識背包和繼承箱
+
 
 
     //當用游標拖曳方格中的道具時，可將其移動到其他空的方格，若其他方格已有道具，則兩者互換；
@@ -26,7 +43,6 @@ public class ItemOnDrag : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDr
 
         GameObject itemCopy = Instantiate(transform.gameObject, originalParent.position, Quaternion.identity);
         itemCopy.transform.SetParent(originalParent);
-        //itemCopy.name = transform.name;
         itemCopy.SetActive(false);
 
         transform.SetParent(originalParent.parent.parent.parent);    //開始拖曳時的Item設為僅次於canvas的子物件
@@ -61,10 +77,10 @@ public class ItemOnDrag : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDr
         if (pointedGameObject != null)
         {
             //偵測到底下是另一個道具
-            if(pointedGameObject.name == "Item Image")
+            if(pointedGameObject.name == itemImage)
             {
                 //從繼承箱無法拖曳到冷卻中的item上
-                if(originalBag.name == "WeaponInherited" || originalBag.name == "EssentialInherited")
+                if(originalBag.name == WeaponInherited || originalBag.name == EssentialInherited)
                 {    
                     if (newBag.itemList[pointedGameObject.GetComponentInParent<Slot>().slotIndex] != null
                         && newBag.itemList[pointedGameObject.GetComponentInParent<Slot>().slotIndex].isCooldown)
@@ -111,7 +127,7 @@ public class ItemOnDrag : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDr
                 choosedSlot.slotInfo = switchedSlot.slotInfo;
                 switchedSlot.slotInfo = tempInfo;
 
-                if (originalParent.gameObject.name.Contains("_Box")) //繼承箱格子拖到背包格子
+                if (originalParent.gameObject.name.Contains(postfix)) //繼承箱格子拖到背包格子
                 {
                     if (pointedGameObject.GetComponentInParent<Slot>().equiped)
                     {
@@ -122,7 +138,7 @@ public class ItemOnDrag : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDr
                         choosedImage.color = Color.white;
                         switchedImage.color = Color.white;
 
-                        if (originalBag.name == "WeaponInherited")
+                        if (originalBag.name == WeaponInherited)
                         {
                             ActiveInventory.Instance.RemoveWeapon();
                         }
@@ -168,7 +184,7 @@ public class ItemOnDrag : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDr
             }
 
             //偵測到底下是空的方格
-            if (pointedGameObject.name == "WeaponSlot(Clone)" || pointedGameObject.name == "EssentialSlot(Clone)")
+            if (pointedGameObject.name == weaponSlotClone || pointedGameObject.name == essentialSlotClone)
             {
                 //底下方格空的item
                 Transform emptyItem = pointedGameObject.transform.GetChild(0);
@@ -199,7 +215,7 @@ public class ItemOnDrag : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDr
                 choosedSlot.slotInfo = switchedSlot.slotInfo;
                 switchedSlot.slotInfo = tempInfo;
 
-                if (originalParent.gameObject.name.Contains("_Box")) //繼承箱格子拖到背包格子
+                if (originalParent.gameObject.name.Contains(postfix)) //繼承箱格子拖到背包格子
                 {
                     //在itemList新增這項道具，元素編號 = 該道具所處方格的編號
                     newBag.itemList[pointedGameObject.GetComponent<Slot>().slotIndex] = originalBag.itemList[currentItemIndex];
@@ -245,7 +261,7 @@ public class ItemOnDrag : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDr
                 return;
             }
 
-            if (pointedGameObject.name == "Item Image_Box")
+            if (pointedGameObject.name == itemImage_Box)
             {
                 if (originalBag.itemList[currentItemIndex].isCooldown)
                 {
@@ -290,7 +306,7 @@ public class ItemOnDrag : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDr
                 choosedSlot.slotInfo = switchedSlot.slotInfo;
                 switchedSlot.slotInfo = tempInfo;
 
-                if (originalParent.gameObject.name.Contains("_Box")) //繼承箱格子拖到繼承箱格子
+                if (originalParent.gameObject.name.Contains(postfix)) //繼承箱格子拖到繼承箱格子
                 {
                     //互換記錄用背包(originalBag)的道具資訊，利用slotIndex = itemList的元素編號
                     //1.當前正在拖曳的道具   2.想拖曳過去的方格內的道具，將兩者互換
@@ -310,7 +326,7 @@ public class ItemOnDrag : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDr
                         choosedImage.color = Color.white;
                         switchedImage.color = Color.white;
 
-                        if (originalBag.name == "Weapon")
+                        if (originalBag.name == weapon)
                         {
                             ActiveInventory.Instance.RemoveWeapon();
                         }
@@ -339,7 +355,7 @@ public class ItemOnDrag : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDr
                 return;
             }
 
-            if (pointedGameObject.name == "WeaponSlot_Box(Clone)" || pointedGameObject.name == "EssentialSlot_Box(Clone)")
+            if (pointedGameObject.name == weaponSlot_BoxClone || pointedGameObject.name == essentialSlot_BoxClone)
             {
                 if (originalBag.itemList[currentItemIndex].isCooldown)
                 {
@@ -384,7 +400,7 @@ public class ItemOnDrag : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDr
                 choosedSlot.slotInfo = switchedSlot.slotInfo;
                 switchedSlot.slotInfo = tempInfo;
 
-                if (originalParent.gameObject.name.Contains("_Box")) //繼承箱格子拖到繼承箱格子
+                if (originalParent.gameObject.name.Contains(postfix)) //繼承箱格子拖到繼承箱格子
                 {
                     //在itemList新增這項道具，元素編號 = 該道具所處方格的編號
                     originalBag.itemList[pointedGameObject.GetComponent<Slot>().slotIndex] = originalBag.itemList[currentItemIndex];
@@ -411,7 +427,7 @@ public class ItemOnDrag : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDr
                         choosedImage.color = Color.white;
                         switchedImage.color = Color.white;
 
-                        if(originalBag.name == "Weapon")
+                        if (originalBag.name == weapon)
                         {
                             ActiveInventory.Instance.RemoveWeapon();
                         }
